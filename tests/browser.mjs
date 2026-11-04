@@ -269,7 +269,7 @@ try {
     async () => {
       const manifest = await page.evaluate(() => chrome.runtime.getManifest());
       expect(manifest.name).toBe("Lykvakt");
-      expect(manifest.version).toBe("0.5.7");
+      expect(manifest.version).toBe("0.5.8");
       expect(manifest.version_name).toBeUndefined();
       await expect(page).toHaveTitle("Lykvakt");
       await expect(page.locator("body")).not.toContainText(
@@ -1649,6 +1649,198 @@ try {
           page.getByRole("heading", { name: "Repaired", exact: true }),
         ).toBeVisible({ timeout: 60000 });
         expect(await storedVault()).toEqual(winning);
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
+    "a cancelled delete cannot resume under a replacement dialog after session validation",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-preflight-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        await importURI(uri);
+        await openMore(page.locator(".account"));
+        await click("Edit");
+        await click("Delete account…");
+        const before = await storedVault();
+        await page.evaluate(() => {
+          const send = chrome.runtime.sendMessage.bind(chrome.runtime);
+          chrome.runtime.sendMessage = function (message, ...args) {
+            if (
+              message?.type === "lykvakt-session" &&
+              message.action === "verify"
+            ) {
+              chrome.runtime.sendMessage = send;
+              return new Promise((resolve, reject) => {
+                window.__releaseActionPreflight = () =>
+                  send(message, ...args).then(resolve, reject);
+              });
+            }
+            return send(message, ...args);
+          };
+        });
+        await click("Delete account");
+        await expect
+          .poll(() =>
+            page.evaluate(() => typeof window.__releaseActionPreflight),
+          )
+          .toBe("function");
+        await click("Close");
+        await click("Help & documentation");
+        await page.evaluate(() => {
+          const release = window.__releaseActionPreflight;
+          delete window.__releaseActionPreflight;
+          return release();
+        });
+        await page.waitForTimeout(500);
+        await expect(page.getByRole("dialog")).toContainText(
+          "Help & documentation",
+        );
+        await expect(page.locator(".account")).toHaveCount(1);
+        expect(await storedVault()).toEqual(before);
+        await click("Close");
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
+    "late clipboard replies cannot display account names after Lock or navigation",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-copy-reply-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        await importURI(uri);
+        for (const change of ["lock", "navigate"]) {
+          await page.evaluate(() => {
+            const write = navigator.clipboard.writeText.bind(
+              navigator.clipboard,
+            );
+            navigator.clipboard.writeText = function () {
+              navigator.clipboard.writeText = write;
+              return new Promise((resolve) => {
+                window.__releaseClipboardReply = resolve;
+              });
+            };
+          });
+          await click("Copy");
+          await expect
+            .poll(() =>
+              page.evaluate(() => typeof window.__releaseClipboardReply),
+            )
+            .toBe("function");
+          await click(change === "lock" ? "Lock" : "Settings");
+          await page.evaluate(async () => {
+            window.__releaseClipboardReply();
+            delete window.__releaseClipboardReply;
+            await Promise.resolve();
+          });
+          await expect(page.locator("#app > .status")).not.toContainText(
+            "Copied code for",
+          );
+          if (change === "lock") {
+            await expect(
+              page.getByLabel("Master password", { exact: true }),
+            ).toBeVisible();
+            await unlock();
+          } else
+            await expect(
+              page.getByRole("heading", { name: "Settings", exact: true }),
+            ).toBeVisible();
+        }
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
+    "an invalid manual setup key gets clear guidance and saves no account",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-key-guidance-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        const before = await storedVault();
+        await click("+ Add account");
+        await page
+          .getByLabel("Service name", { exact: true })
+          .fill("Synthetic");
+        await page
+          .getByLabel("Account name or email", { exact: true })
+          .fill("synthetic@example.test");
+        await page
+          .getByLabel("Setup key", { exact: true })
+          .fill("JBSWY3DPEHPK3PX!");
+        await click("Review account");
+        const message = page.locator(".dialog-status > p");
+        await expect(message).toContainText("letters A–Z and digits 2–7");
+        await expect(message).not.toContainText("password");
+        await expect(message).not.toContainText("selected file");
+        await expect(message).not.toContainText("JBSWY3DPEHPK3PX!");
+        expect(await storedVault()).toEqual(before);
+        await click("Close");
+        await expect(page.locator(".account")).toHaveCount(0);
       } finally {
         await isolated.close();
         page = prior;

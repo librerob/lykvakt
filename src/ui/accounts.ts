@@ -98,7 +98,8 @@ export function createAccounts(ctx: AppContext) {
   }
   async function copyAccount(id: string): Promise<void> {
     session.check();
-    const epoch = session.epoch();
+    const epoch = session.epoch(),
+      viewEpoch = displayEpoch;
     const current = session
       .accounts()
       .accounts.find((account) => account.id === id);
@@ -108,6 +109,13 @@ export function createAccounts(ctx: AppContext) {
     session.check();
     if (epoch !== session.epoch()) return;
     await navigator.clipboard.writeText(value);
+    if (
+      epoch !== session.epoch() ||
+      !session.unlocked ||
+      viewEpoch !== displayEpoch
+    )
+      return;
+    session.check();
     const name = [current.issuer, current.label].filter(Boolean).join(" ");
     announce(`Copied code for ${name}. Clipboard managers may keep a copy.`);
   }

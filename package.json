@@ -1,6 +1,6 @@
 {
   "name": "otp-vault",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "private": true,
   "type": "module",
   "license": "GPL-3.0-or-later",
@@ -43,6 +43,7 @@
   },
   "overrides": {
     "rollup": "npm:@rollup/wasm-node@4.59.0",
-    "esbuild": "npm:esbuild-wasm@0.28.2"
+    "esbuild": "npm:esbuild-wasm@0.28.2",
+    "minimatch": "11.0.4"
   }
 }

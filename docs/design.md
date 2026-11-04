@@ -47,7 +47,7 @@ Canonical JSON sorts object keys by plain code-unit comparison and preserves arr
 
 Payload schema 3 contains accounts, verifiedAt and verifiedSnapshot. Each account has exactly id, issuer, label, secret, type, algorithm, digits, period, counter, favorite and group. The type is totp, hotp or steam. Steam records require a canonical Base32 secret, SHA-1, five characters, a 30-second period and counter "0".
 
-Existing vaults in the current format still open. Older builds reject Steam records, and earlier schemas show the same old-format screen. IDs must be unique, counters are precise unsigned 64-bit strings, and files, account counts and text fields have limits. Website associations and earlier payload schemas are rejected.
+Existing vaults in the current format still open. Older builds reject Steam records, and earlier schemas show the same old-format screen. IDs must be unique, counters are precise unsigned 64-bit strings, and files, account counts and text fields have limits. Google transfers enforce the 2,000-entry limit across the complete batch before converting entries beyond the remaining allowance. Website associations and earlier payload schemas are rejected.
 
 ## Derivation and locking
 
@@ -55,7 +55,7 @@ The shared session defaults to five minutes of inactivity. Settings offers 1, 5,
 
 A bundled module Web Worker handles one password derivation at a time. It derives the password key, imports it immediately and returns only a nonextractable CryptoKey. Node tests and benchmarks explicitly inject the real yielding engine. The extension ships that engine only in its worker. If the worker is missing or fails to start, the app shows an error rather than deriving on the main thread. Message errors and a two-minute deadline also terminate the worker and report failure; a late result is discarded.
 
-Locking aborts pending work, terminates the worker and changes the Session epoch. A late result cannot reopen the session, save data or expose a secret. Closing a dialog, pressing Escape or replacing it cancels the work started in that dialog, including password workers and storage transactions that can still be aborted. Closing cannot undo a write that has already committed. Raw key, password and decoded payload buffers are cleared in finally blocks where practical.
+Locking aborts pending work, terminates the worker and changes the Session epoch. A late result cannot reopen the session, save data or expose a secret. Closing a dialog, pressing Escape or replacing it cancels the work started in that dialog, including password workers and storage transactions that can still be aborted. Actions keep their originating dialog and session generation while validation is pending, so a replacement dialog cannot revive a cancelled action. Closing cannot undo a write that has already committed. Raw key, password and decoded payload buffers are cleared in finally blocks where practical.
 
 JavaScript strings, library internals, browser-managed copies, garbage collection and OS paging mean that complete zeroization cannot be guaranteed. Nonextractable keys also cannot protect an unlocked page from hostile code.
 
