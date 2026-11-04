@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.8 — 4 November 2026
+
+- Cancel pending actions when their original dialog closes or the unlocked session changes; discard late copy confirmations after Lock, hiding or navigation.
+- Enforce the total Google transfer account limit before converting oversized batches.
+- Explain malformed and short setup keys clearly, without echoing secrets in errors.
+- Make shared Lock revoke local-only views after password changes and confirmed recovery.
+- Freeze submitted password fields and Generate controls while sensitive actions run; refresh stale recovery prompts after another window saves.
+- Align Next previews with their current codes and keep rejected setup links out of native parser errors.
+- Patch development-tool glob matching. The encrypted vault format, runtime dependencies and browser permissions stay the same.
+
 ## 0.5.7 — 29 October 2026
 
 - Keep the selected auto-lock timer when another open view sends delayed activity or an older session reply.
