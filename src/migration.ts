@@ -100,6 +100,13 @@ export interface Transfer {
   batchId: string;
 }
 export function parseMigration(input: string, partial = false): Transfer {
+  return readMigration(input, partial, MAX_ACCOUNTS);
+}
+function readMigration(
+  input: string,
+  partial: boolean,
+  remaining: number,
+): Transfer {
   if (input.length > MAX_FILE_BYTES || /[\r\n\u0000]/.test(input))
     throw new Error("Invalid Google transfer URI.");
   let url: URL;
@@ -151,6 +158,8 @@ export function parseMigration(input: string, partial = false): Transfer {
     const entries = fields.get(1);
     if (!entries?.length || entries.length > MAX_ACCOUNTS)
       throw new Error("Empty or oversized Google transfer.");
+    if (entries.length > remaining)
+      throw new Error("Too many transferred accounts.");
     const result = collectImport(entries, (entry) => {
       if (!(entry instanceof Uint8Array))
         throw new Error("Invalid transfer account.");
@@ -208,8 +217,14 @@ export function parseMigration(input: string, partial = false): Transfer {
 function migrationBatch(inputs: string[], partial: boolean): ImportResult {
   if (!inputs.length || inputs.length > 100)
     throw new Error("Invalid transfer batch size.");
-  const transfers = inputs.map((input) => parseMigration(input, partial)),
-    first = transfers[0]!;
+  const transfers: Transfer[] = [];
+  let remaining = MAX_ACCOUNTS;
+  for (const input of inputs) {
+    const transfer = readMigration(input, partial, remaining);
+    remaining -= transfer.entryCount;
+    transfers.push(transfer);
+  }
+  const first = transfers[0]!;
   if (
     transfers.some(
       (t) => t.batchId !== first.batchId || t.batchSize !== first.batchSize,

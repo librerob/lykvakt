@@ -47,7 +47,7 @@ Canonical JSON sorts object keys by plain code-unit comparison and preserves arr
 
 Payload schema 3 contains accounts, verifiedAt and verifiedSnapshot. Each account has exactly id, issuer, label, secret, type, algorithm, digits, period, counter, favorite and group. The type is totp, hotp or steam. Steam records require a canonical Base32 secret, SHA-1, five characters, a 30-second period and counter "0".
 
-Existing vaults in the current format still open. Older builds reject Steam records, and earlier schemas show the same old-format screen. IDs must be unique, counters are precise unsigned 64-bit strings, and files, account counts and text fields have limits. Website associations and earlier payload schemas are rejected.
+Existing vaults in the current format still open. Older builds reject Steam records, and earlier schemas show the same old-format screen. IDs must be unique, counters are precise unsigned 64-bit strings, and files, account counts and text fields have limits. Google transfers enforce the 2,000-entry limit across the complete batch before converting entries beyond the remaining allowance. Website associations and earlier payload schemas are rejected.
 
 ## Derivation and locking
 
