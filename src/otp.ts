@@ -8,11 +8,21 @@ export class SetupKeyLengthError extends Error {
     this.name = "SetupKeyLengthError";
   }
 }
+const setupKeyMessages = {
+  characters: "Secret must use Base32 letters A–Z and digits 2–7.",
+  padding: "Invalid Base32 length or padding.",
+  trailing: "Noncanonical Base32 trailing bits.",
+} as const;
+export class SetupKeyFormatError extends Error {
+  constructor(readonly reason: keyof typeof setupKeyMessages) {
+    super(setupKeyMessages[reason]);
+    this.name = "SetupKeyFormatError";
+  }
+}
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 export function normalizeSecret(input: string): string {
   const s = input.replace(/[ \r\n\t-]/g, "").toUpperCase();
-  if (!/^[A-Z2-7]+={0,6}$/.test(s))
-    throw new Error("Secret must use Base32 letters A–Z and digits 2–7.");
+  if (!/^[A-Z2-7]+={0,6}$/.test(s)) throw new SetupKeyFormatError("characters");
   const raw = s.replace(/=+$/, "");
   const remainder = raw.length % 8;
   if (
@@ -20,10 +30,10 @@ export function normalizeSecret(input: string): string {
     (s.includes("=") &&
       (s.length % 8 !== 0 || s.length - raw.length !== (8 - remainder) % 8))
   )
-    throw new Error("Invalid Base32 length or padding.");
+    throw new SetupKeyFormatError("padding");
   const bits = (raw.length * 5) % 8;
   if (bits && (ALPHABET.indexOf(raw.at(-1)!) & ((1 << bits) - 1)) !== 0)
-    throw new Error("Noncanonical Base32 trailing bits.");
+    throw new SetupKeyFormatError("trailing");
   if (raw.length < 16 || raw.length > 1024) throw new SetupKeyLengthError();
   return raw;
 }

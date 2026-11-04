@@ -1,4 +1,4 @@
-import { SetupKeyLengthError } from "./otp";
+import { SetupKeyFormatError, SetupKeyLengthError } from "./otp";
 import { NoValidAccountsError } from "./import-result";
 import { OldFormatError, oldFormatMessage } from "./format";
 import { StorageConflictError } from "./storage";
@@ -21,6 +21,17 @@ export function friendlyError(error: unknown): {
 } {
   if (error instanceof SetupKeyLengthError)
     return { message: error.message, technical: error.name };
+  if (error instanceof SetupKeyFormatError) {
+    const message = {
+      characters:
+        "This setup key contains unsupported characters. Use the full key from the service, with Base32 letters A–Z and digits 2–7.",
+      padding:
+        "This setup key has invalid padding or length. Copy the full setup key from the service and try again.",
+      trailing:
+        "This setup key has invalid trailing characters. Copy the full setup key from the service and try again.",
+    }[error.reason];
+    return { message, technical: error.name + ": " + error.message };
+  }
   if (error instanceof NoValidAccountsError)
     return {
       message:

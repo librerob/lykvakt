@@ -1798,6 +1798,57 @@ try {
     },
   );
   await check(
+    "an invalid manual setup key gets clear guidance and saves no account",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-key-guidance-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        const before = await storedVault();
+        await click("+ Add account");
+        await page
+          .getByLabel("Service name", { exact: true })
+          .fill("Synthetic");
+        await page
+          .getByLabel("Account name or email", { exact: true })
+          .fill("synthetic@example.test");
+        await page
+          .getByLabel("Setup key", { exact: true })
+          .fill("JBSWY3DPEHPK3PX!");
+        await click("Review account");
+        const message = page.locator(".dialog-status > p");
+        await expect(message).toContainText("letters A–Z and digits 2–7");
+        await expect(message).not.toContainText("password");
+        await expect(message).not.toContainText("selected file");
+        await expect(message).not.toContainText("JBSWY3DPEHPK3PX!");
+        expect(await storedVault()).toEqual(before);
+        await click("Close");
+        await expect(page.locator(".account")).toHaveCount(0);
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
     "older vault requires explicit recovery confirmation",
     async () => {
       const revision = await page.evaluate(async () => {
