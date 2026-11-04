@@ -1657,6 +1657,78 @@ try {
     },
   );
   await check(
+    "a cancelled delete cannot resume under a replacement dialog after session validation",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-preflight-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        await importURI(uri);
+        await openMore(page.locator(".account"));
+        await click("Edit");
+        await click("Delete account…");
+        const before = await storedVault();
+        await page.evaluate(() => {
+          const send = chrome.runtime.sendMessage.bind(chrome.runtime);
+          chrome.runtime.sendMessage = function (message, ...args) {
+            if (
+              message?.type === "lykvakt-session" &&
+              message.action === "verify"
+            ) {
+              chrome.runtime.sendMessage = send;
+              return new Promise((resolve, reject) => {
+                window.__releaseActionPreflight = () =>
+                  send(message, ...args).then(resolve, reject);
+              });
+            }
+            return send(message, ...args);
+          };
+        });
+        await click("Delete account");
+        await expect
+          .poll(() =>
+            page.evaluate(() => typeof window.__releaseActionPreflight),
+          )
+          .toBe("function");
+        await click("Close");
+        await click("Help & documentation");
+        await page.evaluate(() => {
+          const release = window.__releaseActionPreflight;
+          delete window.__releaseActionPreflight;
+          return release();
+        });
+        await page.waitForTimeout(500);
+        await expect(page.getByRole("dialog")).toContainText(
+          "Help & documentation",
+        );
+        await expect(page.locator(".account")).toHaveCount(1);
+        expect(await storedVault()).toEqual(before);
+        await click("Close");
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
     "older vault requires explicit recovery confirmation",
     async () => {
       const revision = await page.evaluate(async () => {

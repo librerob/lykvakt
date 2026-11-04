@@ -33,9 +33,16 @@ const isPopup = isPopupMode(location.search);
 document.body.classList.add(isPopup ? "popup-mode" : "window-mode");
 session.timeout = preferredAutoLockTimeout(isExtension);
 async function run(action: () => void | Promise<void>): Promise<void> {
-  const originDialog = dialog;
+  const originDialog = dialog,
+    epoch = session.epoch();
   try {
     if (session.unlocked) await session.validate();
+    if (
+      epoch !== session.epoch() ||
+      originDialog !== dialog ||
+      originDialog?.isConnected === false
+    )
+      return;
     await action();
   } catch (error) {
     if (
