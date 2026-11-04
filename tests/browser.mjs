@@ -1729,6 +1729,75 @@ try {
     },
   );
   await check(
+    "late clipboard replies cannot display account names after Lock or navigation",
+    async () => {
+      const prior = page,
+        isolated = await launch(
+          await mkdtemp(join(tmpdir(), "lykvakt-copy-reply-")),
+        );
+      isolated.on("request", (request) => {
+        if (/^https?:/.test(request.url())) network.push(request.url());
+      });
+      page = await isolated.newPage();
+      page.on("pageerror", (error) => errors.push(error.message));
+      try {
+        await page.goto(base);
+        await page
+          .getByLabel("Create a master password", { exact: true })
+          .fill(password);
+        await page
+          .getByLabel("Confirm master password", { exact: true })
+          .fill(password);
+        await click("Create encrypted vault");
+        await expect(
+          page.getByRole("button", { name: "+ Add account", exact: true }),
+        ).toBeVisible({ timeout: 60000 });
+        await importURI(uri);
+        for (const change of ["lock", "navigate"]) {
+          await page.evaluate(() => {
+            const write = navigator.clipboard.writeText.bind(
+              navigator.clipboard,
+            );
+            navigator.clipboard.writeText = function () {
+              navigator.clipboard.writeText = write;
+              return new Promise((resolve) => {
+                window.__releaseClipboardReply = resolve;
+              });
+            };
+          });
+          await click("Copy");
+          await expect
+            .poll(() =>
+              page.evaluate(() => typeof window.__releaseClipboardReply),
+            )
+            .toBe("function");
+          await click(change === "lock" ? "Lock" : "Settings");
+          await page.evaluate(async () => {
+            window.__releaseClipboardReply();
+            delete window.__releaseClipboardReply;
+            await Promise.resolve();
+          });
+          await expect(page.locator("#app > .status")).not.toContainText(
+            "Copied code for",
+          );
+          if (change === "lock") {
+            await expect(
+              page.getByLabel("Master password", { exact: true }),
+            ).toBeVisible();
+            await unlock();
+          } else
+            await expect(
+              page.getByRole("heading", { name: "Settings", exact: true }),
+            ).toBeVisible();
+        }
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
     "older vault requires explicit recovery confirmation",
     async () => {
       const revision = await page.evaluate(async () => {
