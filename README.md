@@ -50,6 +50,8 @@ Imports recognise supported formats and show any skipped entries before you save
 
 You can close the popup, copy something from a website and reopen Lykvakt without entering your password again. The session expires after five minutes of inactivity by default. You can choose a different timer in Settings, or **When the browser restarts**. **Lock** ends the session in every open view. Unfinished Add account forms and pasted OTP setup links are remembered during that session. Other pasted exports stay only in the open form, and authentication passwords are never remembered.
 
+**When the browser restarts** has no inactivity timeout. Closing the popup or window does not end that session; press **Lock** when you are finished. A timed option is a better choice on a shared computer.
+
 Import, export and backups are together in **Backup**. You can paste a copied QR image or drop an image file into Import accounts in either the popup or the window. File pickers use the separate window.
 
 You choose your password length; I recommend a long, unique passphrase. **Help & documentation** works offline, and the [full usage guide](docs/usage.md) has more detail.

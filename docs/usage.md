@@ -18,6 +18,8 @@ You choose the length of a new vault or backup password. It must be non-empty; t
 
 There is no password reset or developer recovery service. Keep the password and a verified backup somewhere safe.
 
+Choosing **When the browser restarts** turns off the inactivity timer. The browser keeps the key needed to reopen your vault in temporary memory, so closing the popup or window does not lock it. It does not keep your master password. Use **Lock** when you are finished, and choose a timed option on a shared computer.
+
 ## Adding or importing accounts
 
 Use the setup key or QR image supplied when you enable two-step sign-in on a service. This is different from the short code used to sign in.
