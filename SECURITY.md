@@ -14,4 +14,4 @@ Please [report vulnerabilities privately](https://github.com/librerob/Lykvakt/se
 
 Include the version, your browser and operating system, steps using synthetic accounts, and what you expected to happen compared with what happened. Never attach real passwords, OTP secrets, QR codes, plaintext exports or browser profiles.
 
-If you'd like to review the project more broadly, [REVIEW.md](REVIEW.md) suggests a reading order and specific questions to investigate.
+If you'd like to review the project more broadly, [REVIEW.md](REVIEW.md) sets out the priority areas, a reading order and how to report the scope and limits of a review. The shared-session broker, encryption and encrypted importers need particular attention. An independent review report should name the exact commit examined and the checks actually run.
