@@ -4015,7 +4015,9 @@ try {
         expect(await previous()).toBeUndefined();
         expect(await storedVault()).toEqual(active);
         await importURI(
-          uri.replace("demo%40example.test", "second%40example.test"),
+          uri
+            .replace("demo%40example.test", "second%40example.test")
+            .replace(secret, "JBSWY3DPEHPK3PXP"),
         );
         expect(await previous()).toEqual(active);
       }),
