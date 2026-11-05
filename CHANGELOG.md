@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 — 5 November 2026
 
 - Add Chrome and Firefox install links and a step-by-step backup and restore guide.
 - Offer 21 local language choices, including Romanian and the Nordic languages, with English fallback for longer help.
