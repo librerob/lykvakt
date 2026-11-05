@@ -8,10 +8,12 @@ The [design guide](docs/design.md) explains how the vault is encrypted, how save
 
 If you're moving from an earlier preview, export through the old app before updating. Keep those OTP links private and check the import before removing them.
 
+[Release verification](docs/releases.md) describes clean rebuild checks and signed build-provenance records. These help establish where an archive came from; they do not certify its security or replace independent review. Older archives are not signed retroactively.
+
 ## Reporting a vulnerability
 
 Please [report vulnerabilities privately](https://github.com/librerob/Lykvakt/security/advisories/new). If that route is unavailable, open an issue asking how to contact me privately, without posting exploit details.
 
 Include the version, your browser and operating system, steps using synthetic accounts, and what you expected to happen compared with what happened. Never attach real passwords, OTP secrets, QR codes, plaintext exports or browser profiles.
 
-If you'd like to review the project more broadly, [REVIEW.md](REVIEW.md) suggests a reading order and specific questions to investigate.
+If you'd like to review the project more broadly, [REVIEW.md](REVIEW.md) sets out the priority areas, a reading order and how to report the scope and limits of a review. The shared-session broker, encryption and encrypted importers need particular attention. An independent review report should name the exact commit examined and the checks actually run.

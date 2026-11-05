@@ -60,6 +60,11 @@ export function createSettings(ctx: AppContext) {
           { class: "hint" },
           "Stay unlocked across popup and window closures until this timer expires. The default is 5 minutes of inactivity. Lock ends the session in every view; restarting your browser asks for your password again.",
         ),
+        el(
+          "p",
+          { class: "hint" },
+          'With "When the browser restarts", there is no inactivity timeout. Your vault can stay unlocked even after you close the popup or window. The browser keeps the key needed to open it in temporary memory, not your master password. Choose a timed option on a shared computer, and press Lock when you are finished.',
+        ),
         ctx.isPopup
           ? button("Open in a window", () => run(openVault), "button text")
           : null,

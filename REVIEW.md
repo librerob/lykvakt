@@ -58,6 +58,25 @@ The import parsers follow the linked upstream specifications or export code. All
    Check size, nesting, scrypt costs, fixed PBKDF2 work, field counts, parser
    edge cases and cancellation.
 
+## Independent review scope
+
+The highest-priority review is the encryption and key lifecycle, the shared-session broker, and the encrypted importers. A useful report names the exact commit reviewed, the files and assumptions examined, the checks actually run, and anything left unverified. AI-assisted review, a successful build and a provenance signature are not an independent security audit.
+
+Start with a read-only copy and synthetic accounts. Try to disprove the claims below rather than relying on the test names:
+
+| Area                   | What to challenge                                                                                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Encryption and backups | Header authentication, key wrapping, password normalization, key rotation, old-copy disposal and hostile KDF parameters.                                                           |
+| Shared unlock session  | Sender identity, expiry during sleep, clock changes, worker restarts, cross-view Lock, delayed replies and stale leases. Check both timed sessions and the browser-restart option. |
+| Imports and QR images  | Aggregate size and work limits, malformed encrypted files, parser cancellation, secret-free errors and the review-before-save boundary.                                            |
+| Recovery and writes    | Transaction atomicity, revision conflicts, recovery confirmation and HOTP rollback. Recovery is not secure deletion or a trusted anti-rollback mechanism.                          |
+
+For the shared session, read src/session-broker.ts, src/session-sender.ts, src/browser-session.ts and src/background.ts alongside src/session.ts. The session deliberately retains recoverable vault-key bytes in browser memory; nonextractable CryptoKey objects do not make that cache unreadable to a compromised device. The browser-restart option has no inactivity timeout.
+
+Start with tests/session-broker.test.ts, tests/session-sender.test.ts, tests/shared-session.test.ts, tests/session-deadlines.test.ts, tests/session-clock.test.ts and tests/session-revocation.test.ts cover useful starting cases. Add adversarial cases that are missing. For dialog and input boundaries, include tests/action-preflight.test.ts, tests/clipboard-completion.test.ts and tests/migration-total-budget.test.ts.
+
+Report security findings through the private route below. Include a minimal reproduction with synthetic data, impact, prerequisites and any proposed fix. Public review reports should distinguish confirmed findings, accepted trade-offs and untested concerns.
+
 ## Reporting findings
 
 Please use [private vulnerability reporting](https://github.com/librerob/Lykvakt/security/advisories/new) for security-sensitive findings. [Normal issues](https://github.com/librerob/Lykvakt/issues) are fine for non-sensitive bugs or unclear documentation.

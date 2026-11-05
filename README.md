@@ -36,6 +36,8 @@ For Firefox, open about:debugging, choose **This Firefox → Load Temporary Add-
 
 CI runs browser checks in Chrome, Edge and Firefox, including native popup reopening and shared locking. It also runs axe accessibility checks, headed Chromium session tests and repeated popup-document startup measurements. The workflow runs show the exact browser versions and checks that passed.
 
+For checksums, signed build records and instructions for rebuilding a release from its source ZIP, see [Checking a release](docs/releases.md). A build signature identifies its origin; it is not a security audit.
+
 ## Using Lykvakt
 
 Click an account row to copy its current code. Codes stay hidden until you reveal them, and hide again after 30 seconds. The optional **Next** preview follows the same rules. For HOTP accounts, the counter advances only when you confirm it in **More**.
@@ -49,6 +51,8 @@ Save an encrypted backup somewhere outside the browser, then choose **Verify or 
 Imports recognise supported formats and show any skipped entries before you save. The [design and recovery guide](docs/design.md) explains the formats, migration steps and compatibility limits. Steam support covers sign-in codes; it doesn't handle trade or market confirmations.
 
 You can close the popup, copy something from a website and reopen Lykvakt without entering your password again. The session expires after five minutes of inactivity by default. You can choose a different timer in Settings, or **When the browser restarts**. **Lock** ends the session in every open view. Unfinished Add account forms and pasted OTP setup links are remembered during that session. Other pasted exports stay only in the open form, and authentication passwords are never remembered.
+
+**When the browser restarts** has no inactivity timeout. Closing the popup or window does not end that session; press **Lock** when you are finished. A timed option is a better choice on a shared computer.
 
 Import, export and backups are together in **Backup**. You can paste a copied QR image or drop an image file into Import accounts in either the popup or the window. File pickers use the separate window.
 
