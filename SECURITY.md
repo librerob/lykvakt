@@ -8,6 +8,8 @@ The [design guide](docs/design.md) explains how the vault is encrypted, how save
 
 If you're moving from an earlier preview, export through the old app before updating. Keep those OTP links private and check the import before removing them.
 
+[Release verification](docs/releases.md) describes clean rebuild checks and signed build-provenance records. These help establish where an archive came from; they do not certify its security or replace independent review. Older archives are not signed retroactively.
+
 ## Reporting a vulnerability
 
 Please [report vulnerabilities privately](https://github.com/librerob/Lykvakt/security/advisories/new). If that route is unavailable, open an issue asking how to contact me privately, without posting exploit details.

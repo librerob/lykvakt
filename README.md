@@ -36,6 +36,8 @@ For Firefox, open about:debugging, choose **This Firefox → Load Temporary Add-
 
 CI runs browser checks in Chrome, Edge and Firefox, including native popup reopening and shared locking. It also runs axe accessibility checks, headed Chromium session tests and repeated popup-document startup measurements. The workflow runs show the exact browser versions and checks that passed.
 
+For checksums, signed build records and instructions for rebuilding a release from its source ZIP, see [Checking a release](docs/releases.md). A build signature identifies its origin; it is not a security audit.
+
 ## Using Lykvakt
 
 Click an account row to copy its current code. Codes stay hidden until you reveal them, and hide again after 30 seconds. The optional **Next** preview follows the same rules. For HOTP accounts, the counter advances only when you confirm it in **More**.

@@ -28,6 +28,8 @@ Both implementations use memory-only storage.session and alarms. Firefox restric
 
 The required validate check waits for Chrome and the reusable Other browsers workflow, so Edge or Firefox failures block merging and release preparation. Chrome runs the unit suite, browser scenarios, axe accessibility checks and native-popup checks. Other browsers runs the same Chromium suite in Microsoft Edge and separate Firefox checks through Mozilla's geckodriver. Draft releases collect all three browser ZIPs and the matching Firefox source ZIP, verify their checksums, versions and source commit, and record the hashes in the notes. The Firefox harness uses a fresh synthetic profile and privileged browser-UI automation only in the test process; none of that access ships in the extension.
 
+Each browser job also rebuilds its ZIP from the source archive in a clean temporary directory and requires a byte-for-byte match. A rebuild failure blocks validation. The main-branch draft-release workflow signs the verified browser and source ZIPs, verifies their provenance, and attaches provenance.json to the draft. [Checking a release](releases.md) explains how to repeat the build and verify the signatures.
+
 Check the workflow run for the exact browser versions and results. Store submission and approval are separate from a passing build.
 
 Use the common description in [the listing draft](store/listing-draft.md) for Chrome Web Store, Edge Add-ons and Firefox Add-ons. Use the matching browser's screenshots, the same privacy-policy URL and a ZIP from the same commit. Include the complete source and reproducible build instructions when Mozilla requests them.
