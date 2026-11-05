@@ -195,12 +195,13 @@ async function helpAxe(name) {
   );
   expect(results.violations).toEqual([]);
 }
-async function screenshot(name) {
+async function screenshot(name, target) {
   const old = page.viewportSize();
   const popup = await page
     .locator("body")
     .evaluate((n) => n.classList.contains("popup-mode"));
   await page.setViewportSize({ width: 400, height: popup ? 580 : 700 });
+  if (target) await target.scrollIntoViewIfNeeded();
   await page.screenshot({
     path: `artifacts/screenshots/${name}.png`,
     fullPage: false,
@@ -269,7 +270,7 @@ try {
     async () => {
       const manifest = await page.evaluate(() => chrome.runtime.getManifest());
       expect(manifest.name).toBe("Lykvakt");
-      expect(manifest.version).toBe("0.5.8");
+      expect(manifest.version).toBe("0.5.9");
       expect(manifest.version_name).toBeUndefined();
       await expect(page).toHaveTitle("Lykvakt");
       await expect(page.locator("body")).not.toContainText(
@@ -371,15 +372,15 @@ try {
     ).toBeVisible();
   });
   await check(
-    "compact rows copy by keyboard, expose native More controls and show a stepped expiry ring",
+    "account cards copy by keyboard, expose native More controls and show a stepped expiry ring",
     async () => {
       const row = page.locator(".account").first();
       expect(
         await row.evaluate((node) => node.getBoundingClientRect().height),
-      ).toBeLessThanOrEqual(64);
+      ).toBeGreaterThanOrEqual(96);
       expect(
         await row.evaluate((node) => node.getBoundingClientRect().height),
-      ).toBeLessThanOrEqual(56);
+      ).toBeLessThanOrEqual(112);
       expect(
         await row
           .locator(".otp")
@@ -2237,7 +2238,7 @@ try {
     },
   );
   await check(
-    "compact row lanes stay separate for long names, all code lengths, large counters and Next at 360, 400 and 480 px",
+    "two-row account cards stay aligned for long names, all code lengths, large counters and Next at 360, 400 and 480 px",
     async () => {
       const prior = page,
         isolated = await launch(
@@ -2305,75 +2306,99 @@ try {
         await expect(rows).toHaveCount(5);
         const assertLanes = async () => {
           for (const row of await rows.all()) {
-            const geometry = await row.evaluate((row) => {
+            const g = await row.evaluate((row) => {
               const box = (node) => {
                 const b = node.getBoundingClientRect();
                 return { x: b.x, y: b.y, width: b.width, height: b.height };
               };
-              const parts = [
-                ".account-name",
-                ".code-cell",
-                ".remaining",
-                ".account-more > summary",
-              ].map((selector) => box(row.querySelector(selector)));
-              const code = row.querySelector(".otp"),
-                range = document.createRange();
-              range.selectNodeContents(code);
+              const textBox = (node) => {
+                const range = document.createRange();
+                range.selectNodeContents(node);
+                return box(range);
+              };
               const next = row.querySelector(".next-code");
-              const nextRange = document.createRange();
-              if (next && !next.hidden)
-                nextRange.selectNodeContents(
-                  next.querySelector(".next-code-value"),
-                );
               return {
-                parts,
                 row: box(row),
-                code: box(code),
-                text: box(range),
+                name: box(row.querySelector(".account-name")),
+                menu: box(row.querySelector(".account-more > summary")),
+                codes: box(row.querySelector(".code-cell")),
+                current: box(row.querySelector(".current-code")),
+                code: box(row.querySelector(".otp")),
+                text: textBox(row.querySelector(".otp")),
+                indicator: box(row.querySelector(".remaining")),
+                counter: row
+                  .querySelector(".remaining")
+                  .classList.contains("counter"),
                 next: next && !next.hidden ? box(next) : null,
-                nextText: next && !next.hidden ? box(nextRange) : null,
+                nextText:
+                  next && !next.hidden
+                    ? textBox(next.querySelector(".next-code-value"))
+                    : null,
                 nextLabel:
                   next && !next.hidden
                     ? box(next.querySelector(".hint"))
                     : null,
               };
             });
-            expect(geometry.row.height).toBeLessThanOrEqual(56);
-            expect(geometry.parts[3].width).toBeGreaterThanOrEqual(36);
-            expect(geometry.parts[3].height).toBeGreaterThanOrEqual(36);
-            for (let i = 0; i < geometry.parts.length - 1; i++)
-              expect(
-                geometry.parts[i].x + geometry.parts[i].width,
-              ).toBeLessThanOrEqual(geometry.parts[i + 1].x);
-            expect(geometry.text.x).toBeGreaterThanOrEqual(geometry.parts[1].x);
-            expect(geometry.text.x + geometry.text.width).toBeLessThanOrEqual(
-              geometry.parts[1].x + geometry.parts[1].width + 0.5,
+            expect(g.row.height).toBeGreaterThanOrEqual(96);
+            expect(g.row.height).toBeLessThanOrEqual(112);
+            expect(g.menu.width).toBeGreaterThanOrEqual(36);
+            expect(g.menu.height).toBeGreaterThanOrEqual(36);
+            expect(g.name.x + g.name.width + 8).toBeLessThanOrEqual(
+              g.menu.x + 0.5,
             );
-            if (geometry.next) {
-              expect(geometry.next.width).toBeLessThanOrEqual(
-                geometry.parts[1].width,
+            expect(
+              Math.max(g.name.y + g.name.height, g.menu.y + g.menu.height),
+            ).toBeLessThanOrEqual(g.codes.y);
+            expect(g.codes.x).toBeGreaterThanOrEqual(g.row.x);
+            expect(g.codes.x + g.codes.width).toBeLessThanOrEqual(
+              g.row.x + g.row.width,
+            );
+            expect(g.codes.y + g.codes.height).toBeLessThanOrEqual(
+              g.row.y + g.row.height,
+            );
+            expect(g.text.x).toBeGreaterThanOrEqual(g.code.x);
+            expect(g.text.x + g.text.width).toBeLessThanOrEqual(
+              g.code.x + g.code.width + 0.5,
+            );
+            expect(g.code.y).toBeGreaterThanOrEqual(g.row.y);
+            expect(g.code.y + g.code.height).toBeLessThanOrEqual(
+              g.row.y + g.row.height,
+            );
+            expect(g.code.x + g.code.width + 8).toBeLessThanOrEqual(
+              g.indicator.x + 0.5,
+            );
+            expect(g.indicator.x + g.indicator.width).toBeLessThanOrEqual(
+              g.codes.x + g.codes.width + 0.5,
+            );
+            if (!g.counter)
+              expect(g.indicator.x + g.indicator.width).toBeLessThanOrEqual(
+                g.current.x + g.current.width + 0.5,
+              );
+            if (g.next) {
+              expect(g.current.x + g.current.width + 16).toBeLessThanOrEqual(
+                g.next.x + 0.5,
+              );
+              expect(g.next.x + g.next.width).toBeLessThanOrEqual(
+                g.codes.x + g.codes.width + 0.5,
+              );
+              expect(g.nextLabel.y + g.nextLabel.height).toBeLessThanOrEqual(
+                g.nextText.y + 1,
               );
               expect(
                 Math.abs(
-                  geometry.text.x +
-                    geometry.text.width -
-                    geometry.nextText.x -
-                    geometry.nextText.width,
+                  g.nextLabel.x + g.nextLabel.width - g.next.x - g.next.width,
                 ),
               ).toBeLessThanOrEqual(1);
               expect(
-                geometry.nextLabel.x + geometry.nextLabel.width + 4,
-              ).toBeLessThanOrEqual(geometry.nextText.x);
-              expect(
-                geometry.next.y + geometry.next.height,
-              ).toBeLessThanOrEqual(
-                geometry.parts[1].y + geometry.parts[1].height + 0.5,
+                Math.abs(
+                  g.nextText.x + g.nextText.width - g.next.x - g.next.width,
+                ),
+              ).toBeLessThanOrEqual(1);
+              await expect(row.locator(".next-code > .hint")).toHaveText(
+                "Next code",
               );
             }
-            expect(geometry.code.y).toBeGreaterThanOrEqual(geometry.row.y);
-            expect(geometry.code.y + geometry.code.height).toBeLessThanOrEqual(
-              geometry.row.y + geometry.row.height,
-            );
           }
           expect(
             await page.evaluate(
@@ -2394,7 +2419,8 @@ try {
               );
             }
             await assertLanes();
-            if (width === 400 && !visible) await screenshot("accounts-amoled");
+            if (width === 400 && !visible)
+              await screenshot("accounts-amoled", rows.first());
             if (width === 400 && visible) {
               const long = rows.filter({
                 has: page.getByRole("heading", { name: issuer, exact: true }),
@@ -2412,8 +2438,17 @@ try {
                   .locator("h2")
                   .evaluate((node) => getComputedStyle(node).textOverflow),
               ).toBe("ellipsis");
-              await screenshot("long-name");
-              await screenshot("steam-row");
+              await screenshot("long-name", long);
+              await screenshot("next-code", rows.first());
+              await screenshot(
+                "steam-row",
+                rows.filter({
+                  has: page.getByRole("heading", {
+                    name: "Steam",
+                    exact: true,
+                  }),
+                }),
+              );
             }
           }
         }
@@ -2440,7 +2475,7 @@ try {
             }));
           expect(style).toEqual({ animation: "none", transition: "0s" });
         }
-        await helpAxe("compact-rows");
+        await helpAxe("account-cards");
       } finally {
         await isolated.close();
         page = prior;

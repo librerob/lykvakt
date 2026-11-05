@@ -93,11 +93,11 @@ Changing the password first verifies the current password, then generates a fres
 
 ## Codes and compact controls
 
-Each account has one compact row. Clicking or pressing its copy target copies the current code without revealing it. A separate code button reveals or hides it and has an accessible name. Revealed codes hide again after 30 seconds, navigation or locking. **Always show codes** is optional and starts off.
+Each account has a two-row card. The name and account identifier sit above the code controls, with More in the top-right corner. Clicking or pressing its copy target copies the current code without revealing it. A separate code button reveals or hides it and has an accessible name. Revealed codes hide again after 30 seconds, navigation or locking. **Always show codes** is optional and starts off.
 
 A 22 px stepped ring shows the TOTP period. It has a full-circle track and a thin arc that depletes clockwise from 12 o'clock. During the last ten seconds, a whole-second number appears inside it; during the last five, it also turns pink. There is no spinning animation or transition, including with reduced motion.
 
-HOTP rows show their counter instead. Fixed lanes keep names, codes, the ring or counter, and **More** separate at widths of 360, 400 and 480 px. Long names and counters are clipped, with full tooltips and accessible names. Rows stay 56 px tall, including the next-code preview. **More** is a native details disclosure with a minimum 36×36 px target. It contains Edit, favorite and confirmed counter advancement.
+HOTP rows show their counter instead. The current code and countdown sit together at the lower left; the optional Next code label and preview form a smaller block at the lower right. HOTP uses that right-hand block for its counter. The layout keeps these controls separate at widths of 360, 400 and 480 px. Long names and counters are clipped, with full tooltips and accessible names. **More** is a native details disclosure with a minimum 36×36 px target. It contains Edit, favorite and confirmed counter advancement.
 
 The optional next-code preview starts off. It stays hidden with the current code and supports custom periods, six/eight digits and SHA-1/256/512. It isn't shown for HOTP accounts, and Copy always uses the current code.
 
