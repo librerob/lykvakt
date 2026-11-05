@@ -7,7 +7,7 @@ import { savePreference } from "../preferences";
 import { withGenerator } from "./passphrase";
 import { authenticateAction, verifyMasterPassword } from "./reauth";
 import { button, el, input, form, submit, download, readText } from "../dom";
-import { load } from "../storage";
+import { load, removeRecoveryCopy } from "../storage";
 import { createEnvelope, snapshot } from "../crypto";
 import { toURI, verifyBackup } from "../import";
 import type { Account, VaultData } from "../model";
@@ -118,6 +118,32 @@ export function createRecovery(
           t(
             "This browser keeps a recent locked copy for recovery when the current copy cannot be read. It is separate from the backup file you save elsewhere.",
           ),
+        ),
+        button(
+          t("Remove recent recovery copy…"),
+          () =>
+            run(() => {
+              const expected = session.current();
+              authenticateAction(
+                ctx,
+                t("Remove the recent recovery copy?"),
+                t(
+                  "This removes the older encrypted copy kept in this browser. Your current vault and saved backup files stay as they are. The next account change creates a new recovery copy. This cannot erase copies in system backups or browser storage remnants.",
+                ),
+                t("Remove recent copy"),
+                async (signal) => {
+                  session.check();
+                  signal.throwIfAborted();
+                  await removeRecoveryCopy(expected, signal);
+                  announce(
+                    t(
+                      "Recent recovery copy removed. Your current vault is unchanged.",
+                    ),
+                  );
+                },
+              );
+            }),
+          "button text",
         ),
       ),
       el(

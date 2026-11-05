@@ -117,3 +117,5 @@ Lykvakt does not silently lower password protection to speed up a device. A benc
 A backward system-clock correction ends an unlock session, even if the correction is small. Unlock again after checking your system clock; the app does not extend the old session to compensate.
 
 Translations are an initial, unreviewed pass. Some safety instructions and detailed import reports are still in English. Switch to English if a translation is unclear, and keep a verified backup before moving accounts.
+
+To remove the older encrypted copy retained in this browser, open **Backup → Recent copy → Remove recent recovery copy…** and confirm your master password. The current vault is kept. The next account change creates a new recent copy. This does not remove exported backups, system backups or browser-storage remnants. Keep a verified backup before removing this extra recovery option.

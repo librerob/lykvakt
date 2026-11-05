@@ -234,5 +234,10 @@
   "No image was pasted. Copy the QR image itself, or choose an image file.": "No image was pasted. Copy the QR image itself, or choose an image file.",
   "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.": "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.",
   "Translations have not been independently reviewed. Some safety instructions are still in English.": "Translations have not been independently reviewed. Some safety instructions are still in English.",
-  "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.": "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app."
+  "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.": "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.",
+  "Remove recent recovery copy…": "Remove recent recovery copy…",
+  "Remove the recent recovery copy?": "Remove the recent recovery copy?",
+  "This removes the older encrypted copy kept in this browser. Your current vault and saved backup files stay as they are. The next account change creates a new recovery copy. This cannot erase copies in system backups or browser storage remnants.": "This removes the older encrypted copy kept in this browser. Your current vault and saved backup files stay as they are. The next account change creates a new recovery copy. This cannot erase copies in system backups or browser storage remnants.",
+  "Remove recent copy": "Remove recent copy",
+  "Recent recovery copy removed. Your current vault is unchanged.": "Recent recovery copy removed. Your current vault is unchanged."
 }

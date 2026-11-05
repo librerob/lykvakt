@@ -3955,6 +3955,71 @@ try {
         }
       }),
   );
+  await check(
+    "removing the recent recovery copy requires the password and preserves active",
+    () =>
+      sharedProfile(async () => {
+        const previous = () =>
+          page.evaluate(
+            () =>
+              new Promise((resolve, reject) => {
+                const r = indexedDB.open("otp-vault", 1);
+                r.onerror = () => reject(r.error);
+                r.onsuccess = () => {
+                  const db = r.result,
+                    tx = db.transaction("vault", "readonly"),
+                    get = tx.objectStore("vault").get("previous");
+                  tx.oncomplete = () => {
+                    resolve(get.result);
+                    db.close();
+                  };
+                  tx.onabort = () => {
+                    reject(tx.error);
+                    db.close();
+                  };
+                };
+              }),
+          );
+        await importURI(uri);
+        const active = await storedVault(),
+          older = await previous();
+        expect(older).toBeTruthy();
+        await click("Backup");
+        await click("Remove recent recovery copy…");
+        await expect(page.getByRole("dialog")).toContainText(
+          "The next account change creates a new recovery copy.",
+        );
+        await helpAxe("remove-recovery-copy");
+        await page
+          .getByLabel("Master password", { exact: true })
+          .fill("wrong synthetic password");
+        await click("Remove recent copy");
+        await expect(page.locator("dialog form")).toHaveAttribute(
+          "aria-busy",
+          "false",
+          { timeout: 60000 },
+        );
+        await expect(page.getByRole("dialog")).toBeVisible();
+        await expect(
+          page.getByLabel("Master password", { exact: true }),
+        ).toHaveValue("");
+        expect(await previous()).toEqual(older);
+        expect(await storedVault()).toEqual(active);
+        await page
+          .getByLabel("Master password", { exact: true })
+          .fill(password);
+        await click("Remove recent copy");
+        await expect(page.getByRole("dialog")).toHaveCount(0, {
+          timeout: 60000,
+        });
+        expect(await previous()).toBeUndefined();
+        expect(await storedVault()).toEqual(active);
+        await importURI(
+          uri.replace("demo%40example.test", "second%40example.test"),
+        );
+        expect(await previous()).toEqual(active);
+      }),
+  );
   await check("no external requests during vault workflows", async () =>
     expect(network).toEqual([]),
   );

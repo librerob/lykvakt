@@ -1,5 +1,5 @@
 import { isOlderFormat } from "./format";
-import { validateEnvelope, type Envelope } from "./crypto";
+import { canonical, validateEnvelope, type Envelope } from "./crypto";
 
 export interface OldVaultOffer {
   kind: "old-format";
@@ -257,6 +257,72 @@ export async function eraseOldVault(
               ? new StorageConflictError()
               : new Error(
                   "The old vault could not be erased. It is unchanged.",
+                ),
+        );
+      };
+    });
+  } finally {
+    db.close();
+  }
+}
+
+export async function removeRecoveryCopy(
+  expected: Envelope,
+  signal?: AbortSignal,
+): Promise<void> {
+  signal?.throwIfAborted();
+  const db = await database();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      signal?.throwIfAborted();
+      const tx = db.transaction("vault", "readwrite", { durability: "strict" });
+      const store = tx.objectStore("vault");
+      let conflict = false;
+      const abort = () => {
+        try {
+          tx.abort();
+        } catch {
+          /* Transaction already finished. */
+        }
+      };
+      signal?.addEventListener("abort", abort, { once: true });
+      const cleanup = () => signal?.removeEventListener("abort", abort);
+      store.get("active").onsuccess = (event) => {
+        if (signal?.aborted) {
+          abort();
+          return;
+        }
+        try {
+          const active = validateEnvelope(
+            (event.target as IDBRequest).result,
+            "vault",
+          );
+          if (canonical(active) !== canonical(expected))
+            throw new StorageConflictError();
+        } catch {
+          conflict = true;
+          abort();
+          return;
+        }
+        try {
+          store.delete("previous");
+        } catch {
+          abort();
+        }
+      };
+      tx.oncomplete = () => {
+        cleanup();
+        resolve();
+      };
+      tx.onabort = tx.onerror = () => {
+        cleanup();
+        reject(
+          signal?.aborted
+            ? signal.reason
+            : conflict
+              ? new StorageConflictError()
+              : new Error(
+                  "The recent recovery copy could not be removed. It is unchanged.",
                 ),
         );
       };
