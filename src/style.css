@@ -209,13 +209,16 @@ input[type="checkbox"] {
   gap: var(--s2);
 }
 .account {
+  flex-shrink: 0;
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 112px 40px 36px;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  grid-template-areas: "name more" "codes codes";
   align-items: center;
-  gap: var(--s1);
-  min-height: 56px;
-  padding: var(--s2);
+  column-gap: var(--s2);
+  row-gap: var(--s2);
+  min-height: 96px;
+  padding: var(--s3);
   border: 1px solid var(--line);
   border-radius: var(--s2);
   background: var(--surface);
@@ -253,6 +256,9 @@ input[type="checkbox"] {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.account-name {
+  grid-area: name;
+}
 .account-name h2 {
   font-size: var(--t2);
 }
@@ -261,12 +267,19 @@ input[type="checkbox"] {
   font-size: var(--t1);
 }
 .code-cell {
+  grid-area: codes;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 36px;
-  text-align: center;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s4);
+  min-height: 32px;
   pointer-events: none;
+}
+.current-code {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
 }
 .otp {
   position: relative;
@@ -285,26 +298,40 @@ input[type="checkbox"] {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.code-cell > .otp {
+.current-code > .otp {
   padding: 0;
-  text-align: right;
+  width: auto;
+  min-height: 32px;
+  line-height: 32px;
+  font-size: var(--t5);
+  letter-spacing: 0.02em;
+  text-align: left;
 }
 .remaining {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 36px;
+  flex: none;
+  width: 28px;
+  height: 32px;
   color: var(--muted);
   font-size: var(--t1);
   font-variant-numeric: tabular-nums;
 }
 .remaining.counter {
   display: block;
-  line-height: 36px;
-  text-align: center;
+  width: 112px;
+  line-height: 18px;
+  text-align: right;
+  font-size: var(--t2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.remaining.counter::before {
+  content: "Counter";
+  display: block;
+  font-size: var(--t1);
+  line-height: 14px;
 }
 .remaining svg {
   display: block;
@@ -342,20 +369,26 @@ input[type="checkbox"] {
 }
 .next-code {
   display: flex;
-  justify-content: space-between;
-  gap: var(--s1);
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+  gap: 0;
   color: var(--muted);
-  font-size: var(--t1);
-  line-height: 12px;
+  text-align: right;
   white-space: nowrap;
 }
 .next-code > .hint {
-  line-height: inherit;
+  font-size: var(--t1);
+  line-height: 14px;
 }
 .next-code-value {
+  font-size: var(--t3);
+  line-height: 18px;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 .account-more {
+  grid-area: more;
   position: relative;
   border: 0;
   border-radius: 0;

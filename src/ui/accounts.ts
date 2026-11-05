@@ -277,7 +277,7 @@ export function createAccounts(ctx: AppContext) {
           class: "next-code",
           "aria-label": "Next code, valid after the current one expires",
         },
-        el("span", { class: "hint" }, "Next"),
+        el("span", { class: "hint" }, "Next code"),
         el("span", { class: "next-code-value" }),
       );
       next.hidden = true;
@@ -410,10 +410,14 @@ export function createAccounts(ctx: AppContext) {
         el(
           "div",
           { class: "code-cell" },
-          code,
-          a.type !== "hotp" ? next : null,
+          el(
+            "div",
+            { class: "current-code" },
+            code,
+            a.type !== "hotp" ? remaining : null,
+          ),
+          a.type === "hotp" ? remaining : next,
         ),
-        remaining,
         el(
           "details",
           { class: "account-more" },

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.9 — 5 November 2026
+
+- Give account cards a clearer hierarchy: account details above, the current code and countdown together, and a smaller, aligned Next code preview.
+- Keep the browser-restart session explanation visible in Settings and explain when a timed lock is a better choice.
+- Add clean source-archive rebuild checks for all three browser packages and signed provenance for future draft releases.
+- Focus the independent-review brief on encryption, shared sessions, imports and recovery.
+
 ## 0.5.8 — 4 November 2026
 
 - Cancel pending actions when their original dialog closes or the unlocked session changes; discard late copy confirmations after Lock, hiding or navigation.
