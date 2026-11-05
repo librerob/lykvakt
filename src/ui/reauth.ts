@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { el, input, form, submit } from "../dom";
 import { unwrapPassword } from "../crypto";
 import { dialogOperation, type AppContext } from "./context";
@@ -26,7 +27,7 @@ export function authenticateAction(
   action: (signal: AbortSignal) => Promise<void>,
   review?: { content?: Node; check: () => void },
 ): void {
-  const password = input("password", "Master password", "password");
+  const password = input("password", t("Master password"), "password");
   password.control.required = true;
   ctx.modal(
     title,
@@ -34,7 +35,7 @@ export function authenticateAction(
       async (_fields, f) =>
         ctx.run(async () => {
           const signal = dialogOperation(ctx);
-          ctx.announce("Verifying master password…");
+          ctx.announce(t("Verifying master password…"));
           try {
             review?.check();
             await verifyMasterPassword(ctx, password.control.value, signal);
@@ -42,7 +43,7 @@ export function authenticateAction(
             f.reset();
             password.control.value = "";
           }
-          ctx.announce("Master password confirmed.");
+          ctx.announce(t("Master password confirmed."));
           await action(signal);
           if (!signal.aborted) ctx.closeDialog();
         }),

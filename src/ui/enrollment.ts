@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { qrImageInput } from "./qr-input";
 import { enrollmentDraft } from "./enrollment-draft";
 import { transferReview } from "./transfer";
@@ -29,14 +30,14 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
   function addAccount(): void {
     const draftForm: typeof form = (...args) =>
       enrollmentDraft(ctx, form(...args), "add");
-    const issuer = input("issuer", "Service name"),
-      label = input("label", "Account name or email"),
-      secret = input("secret", "Setup key", "password");
+    const issuer = input("issuer", t("Service name")),
+      label = input("label", t("Account name or email")),
+      secret = input("secret", t("Setup key"), "password");
     label.control.required = secret.control.required = true;
     secret.control.autocomplete = "off";
     const algorithm = select(
       "algorithm",
-      "Algorithm",
+      t("Algorithm"),
       {
         "SHA-1": "SHA-1 (standard OTP)",
         "SHA-256": "SHA-256",
@@ -44,10 +45,10 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       },
       "SHA-1",
     );
-    const digits = select("digits", "Digits", { "6": "6", "8": "8" }, "6");
+    const digits = select("digits", t("Digits"), { "6": "6", "8": "8" }, "6");
     const type = select(
       "type",
-      "Type",
+      t("Type"),
       {
         totp: "TOTP · time based",
         hotp: "HOTP · counter based",
@@ -55,12 +56,14 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       },
       "totp",
     );
-    const period = input("period", "Period in seconds", "number", "30"),
-      counter = input("counter", "HOTP counter", "text", "0");
+    const period = input("period", t("Period in seconds"), "number", "30"),
+      counter = input("counter", t("HOTP counter"), "text", "0");
     const steamHint = el(
       "p",
       { class: "hint" },
-      "Steam support provides sign-in codes only. Trade and market confirmations are not supported.",
+      t(
+        "Steam support provides sign-in codes only. Trade and market confirmations are not supported.",
+      ),
     );
     steamHint.hidden = true;
     const steamSettings = () => {
@@ -70,9 +73,9 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         field.wrapper.hidden = steam;
     };
     type.control.addEventListener("change", steamSettings);
-    const group = input("group", "Group (optional)");
+    const group = input("group", t("Group (optional)"));
     modal(
-      "Add account",
+      t("Add account"),
       draftForm(
         async (data) =>
           run(async () => {
@@ -97,7 +100,9 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         el(
           "p",
           { class: "muted" },
-          "Use the secret key shown when you set up two-step verification for a service.",
+          t(
+            "Use the secret key shown when you set up two-step verification for a service.",
+          ),
         ),
 
         issuer.wrapper,
@@ -106,7 +111,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         el(
           "details",
           {},
-          el("summary", {}, "Advanced options"),
+          el("summary", {}, t("Advanced options")),
           el(
             "div",
             { class: "stack" },
@@ -119,9 +124,9 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             group.wrapper,
           ),
         ),
-        submit("Review account"),
+        submit(t("Review account")),
         button(
-          "Import a link or QR image",
+          t("Import a link or QR image"),
           () => importAccounts(),
           "button text",
         ),
@@ -159,7 +164,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             "small",
             {},
             a.type === "steam"
-              ? "Steam · 5 characters · 30 seconds"
+              ? t("Steam · 5 characters · 30 seconds")
               : `${a.type.toUpperCase()} · ${a.algorithm} · ${a.digits} digits · ${a.type === "hotp" ? "counter " + a.counter : a.period + " seconds"}`,
           ),
           el("p", { class: "otp small" }, code),
@@ -170,7 +175,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
     if (previewEpoch !== session.epoch()) return;
     signal?.throwIfAborted();
     modal(
-      "Review accounts",
+      t("Review accounts"),
       el(
         "div",
         { class: "stack" },
@@ -185,7 +190,9 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         el(
           "p",
           { class: "hint" },
-          "Compare codes with your existing authenticator before removing it. A preview does not verify acceptance by the service.",
+          t(
+            "Compare codes with your existing authenticator before removing it. A preview does not verify acceptance by the service.",
+          ),
         ),
         skipped.length
           ? el(
@@ -200,8 +207,8 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         result.accounts.length
           ? button(
               result.accounts.length === 1
-                ? "Add account"
-                : "Add " + result.accounts.length + " accounts",
+                ? t("Add account")
+                : t("Add {count} accounts", { count: result.accounts.length }),
               () =>
                 run(async () => {
                   const signal = dialogOperation(ctx);
@@ -216,7 +223,9 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                   ctx.state.view = "codes";
                   render();
                   announce(
-                    "Accounts imported. Create and verify a new encrypted backup.",
+                    t(
+                      "Accounts imported. Create and verify a new encrypted backup.",
+                    ),
                   );
                 }),
               "button primary",
@@ -240,15 +249,15 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       autocomplete: "off",
       placeholder: "otpauth://totp/…",
     });
-    const file = input("file", "Or select an export file", "file");
+    const file = input("file", t("Or select an export file"), "file");
     file.control.accept = ".txt,.json,.2fas,.maFile,.authpro";
     const sourcePassword = input(
       "sourcePassword",
-      "Export file password",
+      t("Export file password"),
       "password",
     );
     sourcePassword.wrapper.hidden = true;
-    const qr = input("qr", "Read a QR image locally", "file");
+    const qr = input("qr", t("Read a QR image locally"), "file");
     qr.control.accept = "image/png,image/jpeg,image/webp";
     qr.control.multiple = true;
     let reading = false;
@@ -270,7 +279,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             );
           if (ctx.isExtension) session.rememberDraft();
           area.disabled = true;
-          announce("Reading QR image on this device…");
+          announce(t("Reading QR image on this device…"));
           const { readQRs } = await import("../qr");
           const values: string[] = [];
           for (const file of files) {
@@ -293,7 +302,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       void readImages([...(qr.control.files ?? [])]);
     });
     modal(
-      "Import accounts",
+      t("Import accounts"),
       draftForm(
         async (data) =>
           run(async () => {
@@ -342,40 +351,46 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         el(
           "p",
           { class: "hint" },
-          "OTP setup link drafts can resume during this unlock session. Other pasted export text stays only in this form and is not remembered when you close it.",
+          t(
+            "OTP setup link drafts can resume during this unlock session. Other pasted export text stays only in this form and is not remembered when you close it.",
+          ),
         ),
         sourcePassword.wrapper,
 
         el(
           "label",
           { class: "field" },
-          el("span", {}, "Setup links or export text"),
+          el("span", {}, t("Setup links or export text")),
           area,
         ),
         el(
           "p",
           { class: "hint" },
-          "You can also paste a copied QR image here or drop an image file. Images are read locally and are not saved as drafts. Clipboard history may keep copied images.",
+          t(
+            "You can also paste a copied QR image here or drop an image file. Images are read locally and are not saved as drafts. Clipboard history may keep copied images.",
+          ),
         ),
         fileChoice(ctx, file.wrapper, qr.wrapper),
         el(
           "p",
           { class: "hint" },
-          "All parsing happens on this device. For Google Authenticator, choose Transfer accounts → Export accounts on your phone, then select images of every transfer QR together. Aegis and 2FAS password-protected exports can be opened locally. The file password is used only for this import. Invalid entries are listed for review before saving valid accounts. Incomplete batches and conflicting imports save nothing.",
+          t(
+            "All parsing happens on this device. For Google Authenticator, choose Transfer accounts → Export accounts on your phone, then select images of every transfer QR together. Aegis and 2FAS password-protected exports can be opened locally. The file password is used only for this import. Invalid entries are listed for review before saving valid accounts. Incomplete batches and conflicting imports save nothing.",
+          ),
         ),
 
-        submit("Review import"),
+        submit(t("Review import")),
       ),
     );
   }
 
   function editAccount(id: string): void {
     const a = session.accounts().accounts.find((x) => x.id === id)!;
-    const issuer = input("issuer", "Service name", "text", a.issuer),
-      label = input("label", "Account name or email", "text", a.label),
-      group = input("group", "Group", "text", a.group);
+    const issuer = input("issuer", t("Service name"), "text", a.issuer),
+      label = input("label", t("Account name or email"), "text", a.label),
+      group = input("group", t("Group"), "text", a.group);
     modal(
-      "Edit account",
+      t("Edit account"),
       form(
         async (fields) =>
           run(async () => {
@@ -397,12 +412,12 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           "p",
           { class: "hint" },
           a.type === "steam"
-            ? "Steam · 5 characters · 30 seconds. Sign-in codes only."
+            ? t("Steam · 5 characters · 30 seconds. Sign-in codes only.")
             : `${a.type.toUpperCase()} · ${a.algorithm} · ${a.digits} digits. OTP settings are preserved.`,
         ),
-        submit("Save changes"),
+        submit(t("Save changes")),
         button(
-          "Show transfer QR…",
+          t("Show transfer QR…"),
           () =>
             run(() => {
               const review = transferReview([
@@ -410,9 +425,11 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
               ]);
               authenticateAction(
                 ctx,
-                "Reveal account QR?",
-                "This QR contains the setup secret. Anyone who scans it can generate codes. Scan it in the destination app, compare codes, then close this dialog.",
-                "Reveal QR",
+                t("Reveal account QR?"),
+                t(
+                  "This QR contains the setup secret. Anyone who scans it can generate codes. Scan it in the destination app, compare codes, then close this dialog.",
+                ),
+                t("Reveal QR"),
                 async (signal) => {
                   const epoch = session.epoch();
                   const entry = review.accounts[0]!;
@@ -431,7 +448,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                   if (epoch !== session.epoch()) return;
                   signal.throwIfAborted();
                   modal(
-                    "Account transfer QR",
+                    t("Account transfer QR"),
                     el(
                       "div",
                       { class: "stack" },
@@ -445,8 +462,12 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                         "p",
                         { class: "hint" },
                         entry.type === "steam"
-                          ? "Steam setup link. Only apps supporting otpauth://steam can read it. Favorites and groups are not transferred."
-                          : "Standard otpauth QR. Check algorithm, digits, period and counter support in the destination app. Favorites and groups are not transferred.",
+                          ? t(
+                              "Steam setup link. Only apps supporting otpauth://steam can read it. Favorites and groups are not transferred.",
+                            )
+                          : t(
+                              "Standard otpauth QR. Check algorithm, digits, period and counter support in the destination app. Favorites and groups are not transferred.",
+                            ),
                       ),
                     ),
                   );
@@ -457,7 +478,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           "button text",
         ),
         button(
-          "Export plaintext OTP URI…",
+          t("Export plaintext OTP URI…"),
           () =>
             run(() => {
               const review = transferReview([
@@ -465,9 +486,11 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
               ]);
               authenticateAction(
                 ctx,
-                "Export secret in plaintext?",
-                "Anyone with this file can generate codes for this account. Keep it private and remove the file when migration is complete.",
-                "Export this account",
+                t("Export secret in plaintext?"),
+                t(
+                  "Anyone with this file can generate codes for this account. Keep it private and remove the file when migration is complete.",
+                ),
+                t("Export this account"),
                 async (signal) => {
                   session.check();
                   signal.throwIfAborted();
@@ -480,12 +503,14 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           "button text",
         ),
         button(
-          "Delete account…",
+          t("Delete account…"),
           () =>
             confirmAction(
-              "Delete this account?",
-              "Make sure another authenticator or service recovery code works first. This removes the account from the current vault. The recent encrypted recovery copy may retain it until the next save or a master-password change. Browser storage cannot guarantee forensic erasure.",
-              "Delete account",
+              t("Delete this account?"),
+              t(
+                "Make sure another authenticator or service recovery code works first. This removes the account from the current vault. The recent encrypted recovery copy may retain it until the next save or a master-password change. Browser storage cannot guarantee forensic erasure.",
+              ),
+              t("Delete account"),
               async (signal) => {
                 const data = session.accounts();
                 data.accounts = data.accounts.filter((x) => x.id !== id);

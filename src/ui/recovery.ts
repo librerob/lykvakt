@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { VaultCreatedError } from "../session";
 import { transferReview } from "./transfer";
 import { fileChoice } from "./file-choice";
@@ -30,23 +31,23 @@ export function createRecovery(
     const health = el(
       "div",
       { class: "health" },
-      el("h2", {}, "Vault health"),
+      el("h2", {}, t("Vault health")),
       el(
         "dl",
         {},
-        el("dt", {}, "Accounts"),
+        el("dt", {}, t("Accounts")),
         el("dd", {}, String(data.accounts.length)),
-        el("dt", {}, "Storage"),
-        el("dd", {}, "Password protected on this device"),
-        el("dt", {}, "Unlock methods"),
-        el("dd", {}, "Master password"),
-        el("dt", {}, "Last matching file verification"),
+        el("dt", {}, t("Storage")),
+        el("dd", {}, t("Password protected on this device")),
+        el("dt", {}, t("Unlock methods")),
+        el("dd", {}, t("Master password")),
+        el("dt", {}, t("Last matching file verification")),
         el(
           "dd",
           {},
           data.verifiedAt
             ? new Date(data.verifiedAt).toLocaleString()
-            : "Not yet verified",
+            : t("Not yet verified"),
         ),
       ),
     );
@@ -57,80 +58,92 @@ export function createRecovery(
           "p",
           { class: "hint" },
           !needed
-            ? "The last tested backup matched this account snapshot. Keep the file somewhere safe; its continued availability is not monitored."
-            : "Your current accounts need a matching, verified backup.",
+            ? t(
+                "The last tested backup matched this account snapshot. Keep the file somewhere safe; its continued availability is not monitored.",
+              )
+            : t("Your current accounts need a matching, verified backup."),
         ),
       );
     });
     return el(
       "section",
       { class: "content stack" },
-      el("h1", {}, "Backup"),
+      el("h1", {}, t("Backup")),
       el(
         "ol",
         { class: "backup-steps" },
-        el("li", {}, "Save an encrypted backup outside this browser."),
+        el("li", {}, t("Save an encrypted backup outside this browser.")),
         el(
           "li",
           {},
-          "Open the saved file and check it with your backup passphrase.",
+          t("Open the saved file and check it with your backup passphrase."),
         ),
         el(
           "li",
           {},
-          "To restore on a new browser, choose Restore an encrypted backup on its setup screen.",
+          t(
+            "To restore on a new browser, choose Restore an encrypted backup on its setup screen.",
+          ),
         ),
       ),
       importAccounts
         ? el(
             "div",
             { class: "settings-section stack" },
-            el("h2", {}, "Import accounts"),
+            el("h2", {}, t("Import accounts")),
             el(
               "p",
               {},
-              "Add accounts from setup links, QR images or compatible export files.",
+              t(
+                "Add accounts from setup links, QR images or compatible export files.",
+              ),
             ),
-            button("Import accounts", importAccounts, "button tonal"),
+            button(t("Import accounts"), importAccounts, "button tonal"),
           )
         : null,
       el(
         "p",
         { class: "muted" },
-        "A backup is useful when you know it restores.",
+        t("A backup is useful when you know it restores."),
       ),
       health,
 
       el(
         "div",
         { class: "settings-section stack" },
-        el("h2", {}, "Recent copy"),
+        el("h2", {}, t("Recent copy")),
         el(
           "p",
           {},
-          "This browser keeps a recent locked copy for recovery when the current copy cannot be read. It is separate from the backup file you save elsewhere.",
+          t(
+            "This browser keeps a recent locked copy for recovery when the current copy cannot be read. It is separate from the backup file you save elsewhere.",
+          ),
         ),
       ),
       el(
         "div",
         { class: "settings-section" },
-        el("h2", {}, "Move to another authenticator"),
+        el("h2", {}, t("Move to another authenticator")),
 
         el(
           "p",
           {},
-          "Export accounts as OTP links. Steam links need an app supporting otpauth://steam. For a scannable QR, open an account’s Edit menu. Destination apps may support different OTP settings.",
+          t(
+            "Export accounts as OTP links. Steam links need an app supporting otpauth://steam. For a scannable QR, open an account’s Edit menu. Destination apps may support different OTP settings.",
+          ),
         ),
         button(
-          "Export plaintext OTP links…",
+          t("Export plaintext OTP links…"),
           () =>
             run(() => {
               const review = transferReview(session.accounts().accounts);
               authenticateAction(
                 ctx,
-                "Export every setup secret?",
-                "This unencrypted file lets anyone generate your codes. It excludes favorites and groups. Keep it private, verify the destination app, then remove the file.",
-                "Export all OTP links",
+                t("Export every setup secret?"),
+                t(
+                  "This unencrypted file lets anyone generate your codes. It excludes favorites and groups. Keep it private, verify the destination app, then remove the file.",
+                ),
+                t("Export all OTP links"),
                 async (signal) => {
                   session.check();
                   signal.throwIfAborted();
@@ -148,16 +161,18 @@ export function createRecovery(
       el(
         "div",
         { class: "settings-section" },
-        el("h2", {}, "1. Save an encrypted backup"),
-        el("p", { class: "hint" }, backupCompatibilityMessage),
+        el("h2", {}, t("1. Save an encrypted backup")),
+        el("p", { class: "hint" }, t(backupCompatibilityMessage)),
 
         el(
           "p",
           {},
-          "Includes every account, secret, algorithm, period, counter, favorite and group. Choose a separate backup passphrase.",
+          t(
+            "Includes every account, secret, algorithm, period, counter, favorite and group. Choose a separate backup passphrase.",
+          ),
         ),
         button(
-          "Create encrypted backup",
+          t("Create encrypted backup"),
           () => backupExport(),
           "button primary",
         ),
@@ -165,15 +180,17 @@ export function createRecovery(
       el(
         "div",
         { class: "settings-section" },
-        el("h2", {}, "2. Test the file you saved"),
+        el("h2", {}, t("2. Test the file you saved")),
 
         el(
           "p",
           {},
-          "Open the actual downloaded file. Decrypt it in memory, validate every record, generate test codes, and compare it with this vault.",
+          t(
+            "Open the actual downloaded file. Decrypt it in memory, validate every record, generate test codes, and compare it with this vault.",
+          ),
         ),
         button(
-          "Verify or restore a backup",
+          t("Verify or restore a backup"),
           () => backupVerify(),
           "button tonal",
         ),
@@ -181,22 +198,24 @@ export function createRecovery(
       el(
         "aside",
         { class: "notice" },
-        el("strong", {}, "Keep recovery independent"),
+        el("strong", {}, t("Keep recovery independent")),
         el(
           "p",
           {},
-          "Store the file and its passphrase safely, separately from this browser. Password loss cannot be reversed. Keep website recovery codes and your old authenticator until migration is verified.",
+          t(
+            "Store the file and its passphrase safely, separately from this browser. Password loss cannot be reversed. Keep website recovery codes and your old authenticator until migration is verified.",
+          ),
         ),
       ),
     );
   }
 
   function backupExport(): void {
-    const master = input("masterPassword", "Master password", "password"),
-      password = input("password", "Backup passphrase", "password"),
+    const master = input("masterPassword", t("Master password"), "password"),
+      password = input("password", t("Backup passphrase"), "password"),
       confirmation = input(
         "confirmation",
-        "Confirm backup passphrase",
+        t("Confirm backup passphrase"),
         "password",
       );
     master.control.required = true;
@@ -204,7 +223,7 @@ export function createRecovery(
     password.control.autocomplete = confirmation.control.autocomplete =
       "new-password";
     modal(
-      "Create encrypted backup",
+      t("Create encrypted backup"),
       form(
         async (fields, f) =>
           run(async () => {
@@ -213,7 +232,7 @@ export function createRecovery(
               epoch = session.epoch(),
               signal = dialogOperation(ctx);
             let contents: string;
-            announce(busyCopy.backup);
+            announce(t(busyCopy.backup));
             try {
               if (password !== fields.get("confirmation"))
                 throw new Error("Passphrases do not match.");
@@ -234,14 +253,16 @@ export function createRecovery(
             );
             closeDialog();
             announce(
-              "Encrypted backup exported. Verify the saved file to test restoration.",
+              t(
+                "Encrypted backup exported. Verify the saved file to test restoration.",
+              ),
             );
           }),
         master.wrapper,
         el(
           "p",
           { class: "hint" },
-          "Confirm your master password before exporting setup secrets.",
+          t("Confirm your master password before exporting setup secrets."),
         ),
         withGenerator(password),
 
@@ -249,23 +270,23 @@ export function createRecovery(
         el(
           "p",
           { class: "hint" },
-          "This file restores using its own passphrase.",
+          t("This file restores using its own passphrase."),
         ),
-        submit("Save encrypted file"),
+        submit(t("Save encrypted file")),
       ),
     );
   }
 
   function backupVerify(): void {
     if (ctx.isPopup) {
-      modal("Choose a backup file", fileChoice(ctx));
+      modal(t("Choose a backup file"), fileChoice(ctx));
       return;
     }
-    const file = input("file", "Encrypted backup file", "file"),
-      password = input("password", "Backup passphrase", "password");
+    const file = input("file", t("Encrypted backup file"), "file"),
+      password = input("password", t("Backup passphrase"), "password");
     file.control.accept = ".json";
     modal(
-      "Verify backup restoration",
+      t("Verify backup restoration"),
       form(
         async (_fields, f) =>
           run(async () => {
@@ -276,7 +297,7 @@ export function createRecovery(
               signal = dialogOperation(ctx);
             const passwordValue = password.control.value;
             let result: Awaited<ReturnType<typeof verifyBackup>>;
-            announce(busyCopy.verify);
+            announce(t(busyCopy.verify));
             try {
               const text = await readText(selected);
               signal.throwIfAborted();
@@ -300,7 +321,7 @@ export function createRecovery(
               signal.throwIfAborted();
             }
             modal(
-              "Restoration tested",
+              t("Restoration tested"),
               el(
                 "div",
                 { class: "stack" },
@@ -313,18 +334,22 @@ export function createRecovery(
                   "p",
                   {},
                   result.matches
-                    ? "Exact account snapshot match with this vault."
-                    : "This file differs from the current vault. It may be an older or different backup. It has not been marked as a matching backup.",
+                    ? t("Exact account snapshot match with this vault.")
+                    : t(
+                        "This file differs from the current vault. It may be an older or different backup. It has not been marked as a matching backup.",
+                      ),
                 ),
                 el(
                   "p",
                   { class: "hint" },
-                  "No active accounts were replaced. This test does not prove codes will be accepted by websites.",
+                  t(
+                    "No active accounts were replaced. This test does not prove codes will be accepted by websites.",
+                  ),
                 ),
                 result.matches
                   ? null
                   : button(
-                      "Preview safe merge",
+                      t("Preview safe merge"),
                       () =>
                         run(() => {
                           dialogOperation(ctx).throwIfAborted();
@@ -337,7 +362,7 @@ export function createRecovery(
                       "button tonal",
                     ),
                 button(
-                  "Done",
+                  t("Done"),
                   () => {
                     closeDialog();
                     render();
@@ -350,24 +375,24 @@ export function createRecovery(
         file.wrapper,
         password.wrapper,
 
-        submit("Decrypt & test restoration"),
+        submit(t("Decrypt & test restoration")),
       ),
     );
   }
 
   function recoverySetup(): void {
     if (ctx.isPopup) {
-      modal("Choose a backup file", fileChoice(ctx));
+      modal(t("Choose a backup file"), fileChoice(ctx));
       return;
     }
-    const file = input("file", "Encrypted backup file", "file"),
-      backup = input("backup", "Backup passphrase", "password"),
-      password = input("password", "New master password", "password"),
-      confirm = input("confirm", "Confirm new master password", "password");
+    const file = input("file", t("Encrypted backup file"), "file"),
+      backup = input("backup", t("Backup passphrase"), "password"),
+      password = input("password", t("New master password"), "password"),
+      confirm = input("confirm", t("Confirm new master password"), "password");
     password.control.autocomplete = confirm.control.autocomplete =
       "new-password";
     modal(
-      "Recover into a new vault",
+      t("Recover into a new vault"),
       form(
         async (_fields, f) =>
           run(async () => {
@@ -384,7 +409,7 @@ export function createRecovery(
               if (password.control.value !== confirm.control.value)
                 throw new Error("Passwords do not match.");
               const masterPassword = password.control.value;
-              announce(busyCopy.verify);
+              announce(t(busyCopy.verify));
               const text = await readText(selected);
               signal.throwIfAborted();
               const result = await verifyBackup(
@@ -397,7 +422,7 @@ export function createRecovery(
               if (epoch !== session.epoch())
                 throw new Error("Recovery cancelled by locking.");
               f.reset();
-              announce(busyCopy.setup);
+              announce(t(busyCopy.setup));
               await session.setup(
                 masterPassword,
                 { ...result.data, verifiedAt: null, verifiedSnapshot: null },
@@ -432,7 +457,7 @@ export function createRecovery(
         withGenerator(password),
 
         confirm.wrapper,
-        submit("Test & recover accounts"),
+        submit(t("Test & recover accounts")),
       ),
     );
   }

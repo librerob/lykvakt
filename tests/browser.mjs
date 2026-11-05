@@ -3585,6 +3585,78 @@ try {
         ).toBeVisible();
       }),
   );
+  await check(
+    "21 local language choices persist before unlock with RTL and accessible help",
+    async () => {
+      const prior = page;
+      const isolated = await launch(
+        await mkdtemp(join(tmpdir(), "lykvakt-languages-")),
+      );
+      try {
+        page = await isolated.newPage();
+        await page.goto(base);
+        await expect(page.locator("#app")).toHaveAttribute(
+          "aria-busy",
+          "false",
+        );
+        for (const code of [
+          "en",
+          "es",
+          "fr",
+          "de",
+          "pt",
+          "ru",
+          "ar",
+          "hi",
+          "bn",
+          "ur",
+          "id",
+          "ja",
+          "ko",
+          "zh",
+          "tr",
+          "ro",
+          "nb",
+          "fi",
+          "sv",
+          "is",
+          "da",
+        ]) {
+          await page.locator(".help-link").click();
+          await page.locator('select[name="language"]').selectOption(code);
+          await expect(page.locator("html")).toHaveAttribute("lang", code);
+          await expect(page.getByRole("dialog")).toHaveCount(0);
+          await expect(page.locator("html")).toHaveAttribute(
+            "dir",
+            ["ar", "ur"].includes(code) ? "rtl" : "ltr",
+          );
+          await expect(page.locator('input[name="password"]')).toBeVisible();
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          await page.reload();
+          await expect(page.locator("html")).toHaveAttribute("lang", code);
+          await expect(page.locator("#app")).toHaveAttribute(
+            "aria-busy",
+            "false",
+          );
+          await page.locator(".help-link").click();
+          await expect(page.locator('select[name="language"]')).toHaveValue(
+            code,
+          );
+          await helpAxe("language-" + code);
+          if (["nb", "ar"].includes(code)) await screenshot("language-" + code);
+          await page.locator(".dialog-head button").click();
+        }
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
   await check("no external requests during vault workflows", async () =>
     expect(network).toEqual([]),
   );

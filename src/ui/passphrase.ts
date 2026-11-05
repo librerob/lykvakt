@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { button, el } from "../dom";
 export function withGenerator(field: {
   wrapper: HTMLElement;
@@ -13,7 +14,7 @@ export function withGenerator(field: {
   field.control.addEventListener("input", clear);
   field.control.addEventListener("blur", clear);
   const generate = button(
-    "Generate",
+    t("Generate"),
     async () => {
       const ticket = ++request;
       try {
@@ -29,7 +30,9 @@ export function withGenerator(field: {
             el(
               "strong",
               {},
-              "Write this down before continuing. This passphrase is shown once.",
+              t(
+                "Write this down before continuing. This passphrase is shown once.",
+              ),
             ),
             el("code", { class: "generated-passphrase" }, phrase),
           ),
@@ -40,7 +43,9 @@ export function withGenerator(field: {
             el(
               "p",
               {},
-              "The suggested password could not load. Enter your own long password.",
+              t(
+                "The suggested password could not load. Enter your own long password.",
+              ),
             ),
           );
       }
@@ -57,7 +62,9 @@ export function withGenerator(field: {
     el(
       "p",
       { class: "hint" },
-      "Choose your password length. We recommend a long, unique passphrase (14+ characters).",
+      t(
+        "Choose your password length. We recommend a long, unique passphrase (14+ characters).",
+      ),
     ),
     shown,
   );

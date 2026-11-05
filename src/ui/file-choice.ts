@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { button, el } from "../dom";
 import { openVault } from "../launch";
 import type { AppContext } from "./context";
@@ -10,14 +11,16 @@ export function fileChoice(
     "div",
     { class: "stack file-handoff" },
     button(
-      "Open in a window to choose a file",
+      t("Open in a window to choose a file"),
       () => ctx.run(openVault),
       "button tonal",
     ),
     el(
       "p",
       { class: "hint" },
-      "Your browser can close this small popup while you pick a file. The window uses your current unlock session.",
+      t(
+        "Your browser can close this small popup while you pick a file. The window uses your current unlock session.",
+      ),
     ),
   );
 }

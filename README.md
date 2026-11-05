@@ -63,6 +63,8 @@ You can close the popup, copy something from a website and reopen Lykvakt withou
 
 Import, export and backups are together in **Backup**. You can paste a copied QR image or drop an image file into Import accounts in either the popup or the window. File pickers use the separate window.
 
+Choose your language in Settings or Help & documentation. The [translation guide](docs/translations.md) lists the 21 languages and the English fallback for longer help.
+
 You choose your password length; I recommend a long, unique passphrase. **Help & documentation** works offline, and the [full usage guide](docs/usage.md) has more detail.
 
 ## Under the hood

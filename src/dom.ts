@@ -1,3 +1,4 @@
+import { t } from "./i18n";
 import { DOCUMENTATION_URL } from "./documentation";
 
 export type Child = Node | string | null | undefined | false;
@@ -117,7 +118,7 @@ export function technicalDetails(...children: Child[]): HTMLDetailsElement {
   return el(
     "details",
     { class: "technical-details", "data-technical": "" },
-    el("summary", {}, "Technical details"),
+    el("summary", {}, t("Technical details")),
     ...children,
   );
 }
@@ -143,6 +144,6 @@ export function documentationLink(): HTMLAnchorElement {
       rel: "noopener noreferrer",
       class: "documentation-link",
     },
-    "Full documentation on GitHub",
+    t("Full documentation on GitHub"),
   );
 }
