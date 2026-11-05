@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "アカウントを追加しました。新しい暗号化バックアップを作成し、検証してください。",
   "That account is already in your vault. Nothing was added.": "このアカウントはすでに保管庫にあります。追加していません。",
   "Can't find the setup key?": "セットアップキーが見つかりませんか？",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "クリップボード履歴にキーやQR画像が残る場合があります。管理アプリで保存されたコピーを消してください。"
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "クリップボード履歴にキーやQR画像が残る場合があります。管理アプリで保存されたコピーを消してください。",
+  "Import QR image": "QRコード画像をインポート",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "画像を選択、貼り付け、またはドロップ — PNG、JPEG、WebP",
+  "Paste or drop a QR image": "QRコード画像を貼り付けるかドロップ",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "画像が貼り付けられませんでした。QRコードの画像自体をコピーするか、画像ファイルを選んでください。"
 }

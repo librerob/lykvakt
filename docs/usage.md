@@ -72,6 +72,8 @@ The vault and code generation work offline. Essential help is bundled in the app
 
 ## Paste a QR image
 
+For an image-first screen, choose **Backup → Import accounts → Import QR image**. Choose an image in window mode, or paste/drop it into **Paste or drop a QR image**. PNG, JPEG and WebP are supported. Review the decoded accounts before adding them.
+
 Copy the QR image or a cropped screenshot, open **Backup → Import accounts**, focus **Setup links or export text** and paste with Ctrl+V (Command+V on Mac). Review the accounts, then choose **Add account** or **Add N accounts**. Image-file drops use the same review. A dropped website image may supply only a URL; Lykvakt explains this and never downloads it.
 
 On Windows, Win+Shift+S opens Snipping Tool; select the QR and copy the image if needed. On Mac, Control+Shift+Command+4 copies a selected region. Screenshot tools may save files automatically, and clipboard history may retain images containing setup secrets. Check those settings if you want to avoid extra copies. See [Microsoft’s screenshot guide](https://support.microsoft.com/en-us/windows/apps/use-snipping-tool-to-capture-screenshots) and [Apple’s guide](https://support.apple.com/en-gb/102646).

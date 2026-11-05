@@ -3857,6 +3857,98 @@ try {
         expect(requests).toEqual([]);
       }),
   );
+  await check(
+    "QR-first import explains popup file handling and reviews PNG, JPEG and WebP before saving",
+    () =>
+      sharedProfile(async () => {
+        await page.setViewportSize({ width: 400, height: 580 });
+        await click("Import accounts");
+        await click("Import QR image");
+        await expect(page.getByRole("dialog")).toContainText(
+          "Choose image, paste, or drop — PNG, JPEG or WebP",
+        );
+        await expect(
+          page.getByLabel("Paste or drop a QR image", { exact: true }),
+        ).toHaveAttribute("readonly", "");
+        await expect(
+          page.getByRole("button", {
+            name: "Open in a window to choose a file",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(page.locator("dialog input[type=file]")).toHaveCount(0);
+        await page.evaluate(() =>
+          navigator.clipboard.writeText("SYNTHETIC_PRIVATE_IMAGE_URL"),
+        );
+        await page
+          .getByLabel("Paste or drop a QR image", { exact: true })
+          .focus();
+        await page.keyboard.press("Control+V");
+        await expect(page.getByRole("status")).toContainText(
+          "No image was pasted.",
+        );
+        await expect(page.getByRole("dialog")).not.toContainText(
+          "SYNTHETIC_PRIVATE_IMAGE_URL",
+        );
+        await expect(
+          page.getByLabel("Paste or drop a QR image", { exact: true }),
+        ).toHaveValue("");
+        await helpAxe("qr-first-popup");
+        await screenshot("qr-first-popup");
+        await closeImport();
+        await page.goto(base);
+        await expect(
+          page.getByRole("button", { name: "Lock", exact: true }),
+        ).toBeVisible();
+        const before = await storedVault();
+        const png = await QRCode.toBuffer(
+          "otpauth://totp/QR%20formats:synthetic?secret=JBSWY3DPEHPK3PXP&issuer=QR%20formats",
+          { width: 360, errorCorrectionLevel: "M" },
+        );
+        for (const mime of ["image/png", "image/jpeg", "image/webp"]) {
+          const bytes = await page.evaluate(
+            async ({ base64, mime }) => {
+              const blob = new Blob(
+                [Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))],
+                { type: "image/png" },
+              );
+              const bitmap = await createImageBitmap(blob);
+              try {
+                const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+                canvas.getContext("2d").drawImage(bitmap, 0, 0);
+                const encoded = await canvas.convertToBlob({
+                  type: mime,
+                  quality: 0.85,
+                });
+                if (encoded.type !== mime)
+                  throw Error("Image encoder returned a different type");
+                return Array.from(new Uint8Array(await encoded.arrayBuffer()));
+              } finally {
+                bitmap.close();
+              }
+            },
+            { base64: png.toString("base64"), mime },
+          );
+          await click("Import accounts");
+          await click("Import QR image");
+          if (mime === "image/png") {
+            await helpAxe("qr-first-window");
+            await screenshot("qr-first-window");
+          }
+          await page
+            .getByLabel("Read a QR image locally", { exact: true })
+            .setInputFiles({
+              name: "synthetic." + mime.split("/")[1],
+              mimeType: mime,
+              buffer: Buffer.from(bytes),
+            });
+          await expect(page.getByRole("dialog")).toContainText("1 new account");
+          await expect(page.getByRole("dialog")).toContainText("QR formats");
+          expect(await storedVault()).toEqual(before);
+          await closeImport();
+        }
+      }),
+  );
   await check("no external requests during vault workflows", async () =>
     expect(network).toEqual([]),
   );

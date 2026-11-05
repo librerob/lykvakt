@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "खाता जुड़ गया। नया एन्क्रिप्टेड बैकअप बनाएँ और जाँचें।",
   "That account is already in your vault. Nothing was added.": "यह खाता वॉल्ट में पहले से है। कुछ नहीं जोड़ा गया।",
   "Can't find the setup key?": "सेटअप कुंजी नहीं मिल रही?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "क्लिपबोर्ड इतिहास कुंजियाँ और QR चित्र रख सकता है। क्लिपबोर्ड प्रबंधक में सहेजी प्रतियाँ हटाएँ।"
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "क्लिपबोर्ड इतिहास कुंजियाँ और QR चित्र रख सकता है। क्लिपबोर्ड प्रबंधक में सहेजी प्रतियाँ हटाएँ।",
+  "Import QR image": "QR इमेज इम्पोर्ट करें",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "इमेज चुनें, पेस्ट करें या यहाँ छोड़ें — PNG, JPEG या WebP",
+  "Paste or drop a QR image": "QR इमेज पेस्ट करें या यहाँ छोड़ें",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "कोई इमेज पेस्ट नहीं हुई। QR इमेज को कॉपी करें या कोई इमेज फ़ाइल चुनें।"
 }

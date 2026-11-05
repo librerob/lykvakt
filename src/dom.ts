@@ -26,8 +26,13 @@ export function button(
   label: string,
   action: () => void | Promise<void>,
   className = "button",
+  attributes: Record<string, string> = {},
 ): HTMLButtonElement {
-  const node = el("button", { type: "button", class: className }, label);
+  const node = el(
+    "button",
+    { ...attributes, type: "button", class: className },
+    label,
+  );
   node.addEventListener("click", () => {
     void action();
   });

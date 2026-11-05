@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "账户已添加。请创建并验证新的加密备份。",
   "That account is already in your vault. Nothing was added.": "此账户已在保险库中，没有添加任何内容。",
   "Can't find the setup key?": "找不到设置密钥？",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "剪贴板历史可能保留设置密钥和二维码图片。请在剪贴板管理器中清除副本。"
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "剪贴板历史可能保留设置密钥和二维码图片。请在剪贴板管理器中清除副本。",
+  "Import QR image": "导入二维码图片",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "选择、粘贴或拖放图片 — PNG、JPEG 或 WebP",
+  "Paste or drop a QR image": "粘贴或拖放二维码图片",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "未粘贴图片。请复制二维码图片本身，或选择图片文件。"
 }

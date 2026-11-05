@@ -227,5 +227,9 @@
   "Account added. Create and verify a new encrypted backup.": "Account added. Create and verify a new encrypted backup.",
   "That account is already in your vault. Nothing was added.": "That account is already in your vault. Nothing was added.",
   "Can't find the setup key?": "Can't find the setup key?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.",
+  "Import QR image": "Import QR image",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Choose image, paste, or drop — PNG, JPEG or WebP",
+  "Paste or drop a QR image": "Paste or drop a QR image",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "No image was pasted. Copy the QR image itself, or choose an image file."
 }

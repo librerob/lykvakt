@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Give QR-image imports a prominent action, supported-format hint and dedicated paste/drop screen while preserving text and export-file imports.
+
 ## 0.6.0 — 5 November 2026
 
 - Add Chrome and Firefox install links and a step-by-step backup and restore guide.
