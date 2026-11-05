@@ -253,7 +253,12 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         warnings.length
           ? el(
               "div",
-              { class: "import-warnings", lang: "en", role: "note" },
+              {
+                class: "import-warnings",
+                lang: "en",
+                dir: "ltr",
+                role: "note",
+              },
               el(
                 "p",
                 {},

@@ -113,3 +113,7 @@ A password unlock deliberately runs Argon2id locally with 64 MiB, three passes a
 An unexpired unlock session reopens without running the password derivation again. Keep the default five-minute inactivity timer, or choose a longer timed option in Settings if that fits your device use. **Lock** still ends the session in every view. The browser-restart option disables inactivity locking and has a different security trade-off.
 
 Lykvakt does not silently lower password protection to speed up a device. A benchmark from a different browser or computer is not a guarantee for yours. Maintainers can use the synthetic Node benchmark and browser CI's unlock measurements without uploading a real vault or password.
+
+A backward system-clock correction ends an unlock session, even if the correction is small. Unlock again after checking your system clock; the app does not extend the old session to compensate.
+
+Translations are an initial, unreviewed pass. Some safety instructions and detailed import reports are still in English. Switch to English if a translation is unclear, and keep a verified backup before moving accounts.

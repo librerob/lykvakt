@@ -36,6 +36,11 @@ export function languageChoice(): HTMLElement {
     field.wrapper,
     el(
       "p",
+      { class: "hint", lang: "en", dir: "ltr" },
+      "Translations have not been independently reviewed. Some safety instructions are still in English.",
+    ),
+    el(
+      "p",
       { class: "hint", lang: "en" },
       "Some longer help and import reports are still in English.",
     ),

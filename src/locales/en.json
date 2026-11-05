@@ -232,5 +232,7 @@
   "Choose image, paste, or drop — PNG, JPEG or WebP": "Choose image, paste, or drop — PNG, JPEG or WebP",
   "Paste or drop a QR image": "Paste or drop a QR image",
   "No image was pasted. Copy the QR image itself, or choose an image file.": "No image was pasted. Copy the QR image itself, or choose an image file.",
-  "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.": "QR image header could not be read. Try a cropped PNG, JPEG or WebP image."
+  "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.": "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.",
+  "Translations have not been independently reviewed. Some safety instructions are still in English.": "Translations have not been independently reviewed. Some safety instructions are still in English.",
+  "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.": "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app."
 }
