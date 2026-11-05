@@ -2,7 +2,9 @@
 
 These are captures of the running extension in Chromium, using synthetic accounts. They show the extension document, without browser chrome. No account details or controls were redrawn.
 
-Every image is 400 px wide. The popup capture is 400 × 580; window captures are 400 × 700. The rendered app source is [3128a395](https://github.com/librerob/lykvakt/commit/3128a3956ec5b7d9850c770a743dcc73e10bb792). The screenshot refresh and headed test-driver correction do not change the app runtime.
+Every image is 400 px wide. The popup capture is 400 × 580; window captures are 400 × 700. These captures come from [the Chromium CI run](https://github.com/librerob/lykvakt/actions/runs/42005878815) for app source [729c8884](https://github.com/librerob/lykvakt/commit/729c8884cef128db16218c52f9100297ea33a272).
+
+Account cards put the name and menu above the code controls. The current code and countdown stay together on the left; the optional Next code label and preview form a smaller block on the right.
 
 ## Popup
 
@@ -20,6 +22,7 @@ File selection uses an explicitly opened window. Its default inactivity limit is
 
 - [Code controls and countdown](screenshots/accounts-expiring.png)
 - [Account list](screenshots/accounts-amoled.png)
+- [Current and next codes](screenshots/next-code.png)
 - [Empty vault](screenshots/empty.png)
 - [Setup](screenshots/setup.png)
 - [Locked vault](screenshots/locked.png)
