@@ -66,6 +66,21 @@ export function createRecovery(
       "section",
       { class: "content stack" },
       el("h1", {}, "Backup"),
+      el(
+        "ol",
+        { class: "backup-steps" },
+        el("li", {}, "Save an encrypted backup outside this browser."),
+        el(
+          "li",
+          {},
+          "Open the saved file and check it with your backup passphrase.",
+        ),
+        el(
+          "li",
+          {},
+          "To restore on a new browser, choose Restore an encrypted backup on its setup screen.",
+        ),
+      ),
       importAccounts
         ? el(
             "div",

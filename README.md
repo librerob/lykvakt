@@ -4,6 +4,11 @@ I built Lykvakt because I wanted a small authenticator I could use every day wit
 
 Lykvakt runs in **Chrome, Microsoft Edge and Firefox on desktop**. All three builds come from this repository and use the same encrypted backup format. Each browser keeps its own vault; use an encrypted backup to move your accounts between them.
 
+[![Get Lykvakt on the Chrome Web Store](docs/assets/chrome-store.svg)](https://chromewebstore.google.com/detail/lykvakt/mkdpeckmkminhpoehedicocglpdiicon)
+[![Get Lykvakt on Firefox Add-ons](docs/assets/firefox-addons.svg)](https://addons.mozilla.org/en-US/firefox/addon/lykvakt/)
+
+For Edge, use the Chrome Web Store link and allow extensions from other stores when Edge asks. The separate Edge build is also available in the [GitHub releases](https://github.com/librerob/lykvakt/releases).
+
 The name is coined and Nordic-inspired, with the idea of watching over your keys.
 
 ![Authenticator popup with synthetic accounts](docs/screenshots/popup-mode.png)
@@ -47,6 +52,8 @@ Ctrl+Shift+Y opens the popup, or Command+Shift+Y on Mac. Edge uses Ctrl+Shift+7 
 Choose **Open in a window** in Settings if you want to keep Lykvakt open alongside a website or select a file.
 
 Save an encrypted backup somewhere outside the browser, then choose **Verify or restore a backup** in **Backup** to test the file you saved. Creating a backup, exporting plaintext OTP links and revealing a transfer QR all ask for your master password again.
+
+Start with [the step-by-step backup and restore guide](docs/backups.md). It explains which password to use, how to check your saved file, and how to move to a new browser without replacing an existing vault.
 
 Imports recognise supported formats and show any skipped entries before you save. The [design and recovery guide](docs/design.md) explains the formats, migration steps and compatibility limits. Steam support covers sign-in codes; it doesn't handle trade or market confirmations.
 

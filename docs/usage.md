@@ -42,6 +42,8 @@ HOTP accounts use a counter. Copying does not advance it. Confirm **More → Adv
 
 ## Backups
 
+For numbered instructions, see [Back up and restore your accounts](backups.md). It covers saving, checking, restoring into a fresh vault and merging into an existing one.
+
 In **Backup**, create an encrypted backup with a separate passphrase. You must confirm the master password before exporting account secrets.
 
 Save the file outside the browser. Then choose **Verify or restore a backup**, open the actual saved file and enter its backup passphrase. Verification tests the file and compares its accounts without replacing your active vault. A matching result does not prove that websites will accept the codes.
