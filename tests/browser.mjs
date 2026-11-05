@@ -2432,11 +2432,27 @@ try {
               );
             }
           }
-          expect(
-            await page.evaluate(
-              () => document.documentElement.scrollWidth <= innerWidth,
-            ),
-          ).toBe(true);
+          const fits = await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          );
+          if (!fits)
+            console.error(
+              "Localized overflow",
+              code,
+              await page.evaluate(() =>
+                [...document.querySelectorAll("*")]
+                  .filter(
+                    (node) => node.getBoundingClientRect().right > innerWidth,
+                  )
+                  .slice(0, 8)
+                  .map((node) => ({
+                    tag: node.tagName,
+                    className: String(node.className),
+                    right: node.getBoundingClientRect().right,
+                  })),
+              ),
+            );
+          expect(fits).toBe(true);
         };
         for (const width of [360, 400, 480]) {
           await page.setViewportSize({ width, height: 760 });

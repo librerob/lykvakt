@@ -5,13 +5,24 @@ import { parseURI } from "../src/import";
 import type { Session } from "../src/session";
 import { context, ui, resetUI } from "./helpers/ui";
 import { TestElement, testDocument } from "./helpers/dom";
-const { generate } = vi.hoisted(() => ({ generate: vi.fn() }));
-vi.mock("../src/otp", async (original) => ({
-  ...(await original<object>()),
-  codeFor: generate,
+const { generate, normalized } = vi.hoisted(() => ({
+  generate: vi.fn(),
+  normalized: vi.fn(),
 }));
+vi.mock("../src/otp", async (original) => {
+  const real = await original<typeof import("../src/otp")>();
+  return {
+    ...real,
+    codeFor: generate,
+    normalizeSecret: (value: string) => {
+      normalized(value.length);
+      return real.normalizeSecret(value);
+    },
+  };
+});
 beforeEach(() => {
   resetUI();
+  normalized.mockClear();
   vi.stubGlobal("document", testDocument);
   generate.mockReset().mockResolvedValue("123456");
   vi.stubGlobal(
@@ -120,4 +131,19 @@ it("cancels before saving if the manual dialog closes while code validation is p
   await vi.waitFor(() => expect(app.errors).toHaveLength(1));
   expect(app.saved).not.toHaveBeenCalled();
   expect(app.data.accounts).toEqual([]);
+});
+
+it("rejects oversized manual input before normalization or code work without echoing it", async () => {
+  const app = setup();
+  app.secret.value = "A".repeat(1000000);
+  app.secret.dispatchEvent(new Event("input"));
+  expect(normalized.mock.calls.length).toBe(0);
+  expect(app.form.querySelector(".short-key-warning")!.hidden).toBe(true);
+  app.submit();
+  await vi.waitFor(() => expect(app.errors).toHaveLength(1));
+  expect(normalized.mock.calls.length).toBe(0);
+  expect(generate).not.toHaveBeenCalled();
+  expect(app.saved).not.toHaveBeenCalled();
+  expect(String(app.errors[0])).toContain("1 to 640 bytes");
+  expect(String(app.errors[0])).not.toContain(app.secret.value);
 });

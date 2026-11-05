@@ -45,6 +45,10 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
     );
     shortKey.hidden = true;
     secret.control.addEventListener("input", () => {
+      if (secret.control.value.length > 1024) {
+        shortKey.hidden = true;
+        return;
+      }
       try {
         shortKey.hidden = normalizeSecret(secret.control.value).length >= 16;
       } catch {
@@ -157,7 +161,6 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.",
           ),
         ),
-        setupHelp(),
         shortKey,
         el(
           "details",
@@ -181,6 +184,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           () => importAccounts(),
           "button text",
         ),
+        setupHelp(),
       ),
     );
   }

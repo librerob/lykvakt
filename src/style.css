@@ -839,3 +839,35 @@ html:not([lang="en"]) .search-row > .button {
 html:not([lang="en"]) .documentation-link {
   white-space: normal;
 }
+
+/* Longer labels must fit the same popup width in every language. */
+html:not([lang="en"]) .header-actions {
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
+  gap: 8px;
+}
+html:not([lang="en"]) .header-actions > .button.tonal {
+  flex-shrink: 0;
+  max-width: 144px;
+  padding-inline: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .help-link {
+  min-width: 0;
+  flex: 0 1 auto;
+  padding-inline: 4px;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .nav-item {
+  min-width: 0;
+  flex: 1 1 0;
+  padding-inline: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .search-row > .button {
+  min-width: 0;
+  white-space: normal;
+}
