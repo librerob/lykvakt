@@ -135,7 +135,7 @@ export function friendlyError(error: unknown): {
     };
   if (
     error instanceof Error &&
-    /^(QR reading|No readable QR code|Too many QR codes|QR image dimensions|Image decoding unavailable)/.test(
+    /^(QR reading|No readable QR code|Too many QR codes|QR image (?:dimensions|header)|Image decoding unavailable)/.test(
       error.message,
     )
   )
