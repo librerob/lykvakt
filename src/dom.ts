@@ -1,4 +1,4 @@
-import { t } from "./i18n";
+import { t, currentLanguage, isEnglishFallback } from "./i18n";
 import { DOCUMENTATION_URL } from "./documentation";
 
 export type Child = Node | string | null | undefined | false;
@@ -13,6 +13,13 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   for (const child of children)
     if (child !== null && child !== undefined && child !== false)
       node.append(child);
+  if (
+    !attributes.lang &&
+    children.some(
+      (child) => typeof child === "string" && isEnglishFallback(child),
+    )
+  )
+    node.setAttribute("lang", "en");
   return node;
 }
 export function button(
@@ -135,11 +142,12 @@ export function svg<K extends keyof SVGElementTagNameMap>(
   return node;
 }
 
-export function documentationLink(): HTMLAnchorElement {
+export function documentationLink(anchor = ""): HTMLAnchorElement {
   return el(
     "a",
     {
-      href: DOCUMENTATION_URL,
+      href: DOCUMENTATION_URL + anchor,
+      lang: currentLanguage(),
       target: "_blank",
       rel: "noopener noreferrer",
       class: "documentation-link",

@@ -49,6 +49,8 @@ Click an account row to copy its current code. Codes stay hidden until you revea
 
 Ctrl+Shift+Y opens the popup, or Command+Shift+Y on Mac. Edge uses Ctrl+Shift+7 (Command+Shift+7 on Mac), and Firefox on Linux uses Ctrl+Shift+7, to avoid browser shortcuts. To change the shortcut, choose **Change shortcut** in Settings. This opens your browser's shortcut manager. To copy with Enter, type part of an account name into search first; the confirmation tells you which account was copied.
 
+Can’t find a text setup key? [Use a copied or cropped QR image](docs/usage.md#if-you-cannot-find-a-setup-key). The guide also explains clipboard history and screenshot copies.
+
 Choose **Open in a window** in Settings if you want to keep Lykvakt open alongside a website or select a file.
 
 Save an encrypted backup somewhere outside the browser, then choose **Verify or restore a backup** in **Backup** to test the file you saved. Creating a backup, exporting plaintext OTP links and revealing a transfer QR all ask for your master password again.

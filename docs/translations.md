@@ -6,7 +6,7 @@ The first translation pass includes English, Spanish, French, German, Portuguese
 
 Every language has the core navigation, account and backup controls, password prompts, key safety notices and accessible code labels. Some longer help, detailed import reports, migration guidance and the full GitHub documentation remain in English. Missing translations fall back to the original English text.
 
-Translations are bundled and loaded locally only when selected. No translation service, network request, browser permission or runtime dependency is added. Account names, setup keys, passwords and generated codes are never sent for translation or looked up in the translation catalogue. Arabic and Urdu use a right-to-left interface; code digits retain their original order.
+Translations are bundled and loaded locally only when selected. No translation service, network request, browser permission or runtime dependency is added. Translations apply to interface text. Your accounts and secrets are not translated or sent to a translation service. Arabic and Urdu use a right-to-left interface; code digits retain their original order.
 
 ## Reviewing or adding translations
 

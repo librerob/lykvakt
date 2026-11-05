@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "दूसरी विंडो ने बदलाव सहेजा। इस विंडो को लॉक और अनलॉक करके फिर कोशिश करें।",
   "That action stopped because the vault locked. Unlock it and try again.": "वॉल्ट लॉक होने से कार्रवाई रुकी। अनलॉक करके फिर कोशिश करें।",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "अधिकतम 1,024 अक्षर लिखें। लंबा, अनोखा पासफ़्रेज़ सुझाया जाता है।",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "फ़ाइल नहीं पढ़ सके। अपरिवर्तित निर्यात या बैकअप चुनें। खाते नहीं बदले हैं।"
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "फ़ाइल नहीं पढ़ सके। अपरिवर्तित निर्यात या बैकअप चुनें। खाते नहीं बदले हैं।",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "कुंजी छोटी है: सेवा की पूरी कुंजी ज्यों की त्यों उपयोग करें। छोटी कुंजी कम सुरक्षा देती है।",
+  "Account added. Create and verify a new encrypted backup.": "खाता जुड़ गया। नया एन्क्रिप्टेड बैकअप बनाएँ और जाँचें।",
+  "That account is already in your vault. Nothing was added.": "यह खाता वॉल्ट में पहले से है। कुछ नहीं जोड़ा गया।",
+  "Can't find the setup key?": "सेटअप कुंजी नहीं मिल रही?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "क्लिपबोर्ड इतिहास कुंजियाँ और QR चित्र रख सकता है। क्लिपबोर्ड प्रबंधक में सहेजी प्रतियाँ हटाएँ।"
 }

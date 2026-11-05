@@ -252,7 +252,21 @@ try {
   );
   await popup.click("Review import");
   await popup.click("Add account");
-  await popup.count("dialog", 0);
+  await popup.count("dialog", 0).catch(async (error) => {
+    console.error(
+      "Native popup import failure",
+      await popup
+        .evaluate(
+          "JSON.stringify({title:document.querySelector('#dialog-title')?.textContent,status:[...document.querySelectorAll('.dialog-status')].map(n=>n.textContent),busy:document.querySelector('form')?.getAttribute('aria-busy')})",
+        )
+        .catch(() => "diagnostics unavailable"),
+    );
+    await mkdir("artifacts/screenshots", { recursive: true });
+    await popup
+      .screenshot("artifacts/screenshots/native-popup-import-failure.png")
+      .catch(() => {});
+    throw error;
+  });
   await popup.count(".account", 1);
   await mkdir("artifacts/screenshots", { recursive: true });
   await popup.screenshot("artifacts/screenshots/actual-toolbar-popup.png");

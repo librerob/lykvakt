@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Ein anderes Fenster hat Änderungen gespeichert. Sperre und entsperre dieses Fenster und versuche es erneut.",
   "That action stopped because the vault locked. Unlock it and try again.": "Die Sperrung hat die Aktion beendet. Entsperre und versuche es erneut.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Gib höchstens 1.024 Zeichen ein. Eine lange, einzigartige Passphrase wird empfohlen.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Datei nicht lesbar. Wähle einen unveränderten Export oder eine Sicherung. Deine Konten wurden nicht geändert."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Datei nicht lesbar. Wähle einen unveränderten Export oder eine Sicherung. Deine Konten wurden nicht geändert.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Kurzer Schlüssel: Verwende den vollständigen Schlüssel des Dienstes unverändert. Kurze Schlüssel schützen weniger.",
+  "Account added. Create and verify a new encrypted backup.": "Konto hinzugefügt. Erstelle und prüfe eine neue verschlüsselte Sicherung.",
+  "That account is already in your vault. Nothing was added.": "Dieses Konto ist bereits im Tresor. Nichts wurde hinzugefügt.",
+  "Can't find the setup key?": "Einrichtungsschlüssel nicht gefunden?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Der Zwischenablageverlauf kann Schlüssel und QR-Bilder speichern. Entferne gespeicherte Kopien im Zwischenablageprogramm."
 }

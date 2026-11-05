@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "دوسری ونڈو نے تبدیلی محفوظ کی۔ اس ونڈو کو لاک پھر ان لاک کرکے دوبارہ آزمائیں۔",
   "That action stopped because the vault locked. Unlock it and try again.": "والٹ لاک ہونے سے کارروائی رکی۔ ان لاک کرکے دوبارہ آزمائیں۔",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "زیادہ سے زیادہ 1,024 حروف لکھیں۔ طویل اور منفرد پاس فریز بہتر ہے۔",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "فائل نہیں پڑھی جا سکی۔ غیر ترمیم شدہ برآمد یا بیک اپ منتخب کریں۔ اکاؤنٹس نہیں بدلے۔"
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "فائل نہیں پڑھی جا سکی۔ غیر ترمیم شدہ برآمد یا بیک اپ منتخب کریں۔ اکاؤنٹس نہیں بدلے۔",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "مختصر کلید: سروس کی پوری کلید بالکل ویسی ہی استعمال کریں۔ مختصر کلید کم تحفظ دیتی ہے۔",
+  "Account added. Create and verify a new encrypted backup.": "اکاؤنٹ شامل ہوگیا۔ نیا رمز شدہ بیک اپ بنا کر جانچیں۔",
+  "That account is already in your vault. Nothing was added.": "یہ اکاؤنٹ پہلے ہی والٹ میں ہے۔ کچھ شامل نہیں ہوا۔",
+  "Can't find the setup key?": "سیٹ اپ کلید نہیں مل رہی؟",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "کلپ بورڈ کی تاریخ کلیدیں اور QR تصاویر رکھ سکتی ہے۔ کلپ بورڈ مینیجر سے محفوظ نقول حذف کریں۔"
 }

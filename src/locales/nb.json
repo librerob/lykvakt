@@ -222,5 +222,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Et annet vindu har lagret en endring. Lås og lås opp dette vinduet, og prøv igjen.",
   "That action stopped because the vault locked. Unlock it and try again.": "Handlingen stoppet fordi hvelvet ble låst. Lås opp og prøv igjen.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Bruk et passord på opptil 1 024 tegn. En lang, unik passfrase anbefales.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Filen kunne ikke leses. Velg en uendret eksport eller kopi og prøv igjen. Kontoene er ikke endret."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Filen kunne ikke leses. Velg en uendret eksport eller kopi og prøv igjen. Kontoene er ikke endret.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Kort oppsettnøkkel: bruk hele nøkkelen fra tjenesten nøyaktig som den er. Korte nøkler gir mindre beskyttelse.",
+  "Account added. Create and verify a new encrypted backup.": "Konto lagt til. Lag og bekreft en ny kryptert sikkerhetskopi.",
+  "That account is already in your vault. Nothing was added.": "Kontoen finnes allerede i hvelvet. Ingenting ble lagt til.",
+  "Can't find the setup key?": "Finner du ikke oppsettnøkkelen?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Utklippstavlehistorikken kan beholde oppsettnøkler og QR-bilder. Fjern lagrede kopier i utklippstavlebehandleren."
 }

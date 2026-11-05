@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Altă fereastră a salvat o modificare. Blochează și deblochează această fereastră, apoi reîncearcă.",
   "That action stopped because the vault locked. Unlock it and try again.": "Acțiunea s-a oprit deoarece seiful s-a blocat. Deblochează-l și reîncearcă.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Introdu cel mult 1.024 de caractere. Recomandăm o frază lungă și unică.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Fișierul nu a putut fi citit. Alege un export sau o copie nemodificată. Conturile tale nu au fost schimbate."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Fișierul nu a putut fi citit. Alege un export sau o copie nemodificată. Conturile tale nu au fost schimbate.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Cheie scurtă: folosește exact cheia completă a serviciului. Cheile scurte oferă protecție mai slabă.",
+  "Account added. Create and verify a new encrypted backup.": "Cont adăugat. Creează și verifică o copie criptată nouă.",
+  "That account is already in your vault. Nothing was added.": "Contul există deja în seif. Nu s-a adăugat nimic.",
+  "Can't find the setup key?": "Nu găsești cheia de configurare?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Istoricul clipboardului poate păstra chei și imagini QR. Șterge copiile din aplicația pentru clipboard."
 }

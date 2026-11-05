@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Annar gluggi vistaði breytingu. Læstu og opnaðu þennan glugga og reyndu aftur.",
   "That action stopped because the vault locked. Unlock it and try again.": "Aðgerðin stöðvaðist þegar hirslan læstist. Opnaðu hana og reyndu aftur.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Sláðu inn allt að 1.024 stafi. Langur, einstakur lykilfrasi er ráðlagður.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Ekki tókst að lesa skrána. Veldu óbreyttan útflutning eða öryggisafrit. Reikningunum hefur ekki verið breytt."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Ekki tókst að lesa skrána. Veldu óbreyttan útflutning eða öryggisafrit. Reikningunum hefur ekki verið breytt.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Stuttur lykill: notaðu allan lykil þjónustunnar nákvæmlega. Stuttir lyklar veita minni vörn.",
+  "Account added. Create and verify a new encrypted backup.": "Reikningi bætt við. Búðu til og staðfestu nýtt dulkóðað öryggisafrit.",
+  "That account is already in your vault. Nothing was added.": "Reikningurinn er þegar í hirslunni. Engu var bætt við.",
+  "Can't find the setup key?": "Finnurðu ekki uppsetningarlykilinn?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Klippiborðsferill getur geymt lykla og QR-myndir. Hreinsaðu vistaðar færslur í klippiborðsforritinu."
 }

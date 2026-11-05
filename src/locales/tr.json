@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Başka pencere değişiklik kaydetti. Bu pencereyi kilitleyip açın ve tekrar deneyin.",
   "That action stopped because the vault locked. Unlock it and try again.": "Kasa kilitlendiği için işlem durdu. Kilidi açıp tekrar deneyin.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "En fazla 1.024 karakter girin. Uzun, benzersiz parola önerilir.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Dosya okunamadı. Değiştirilmemiş bir aktarım veya yedek seçin. Hesaplarınız değişmedi."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Dosya okunamadı. Değiştirilmemiş bir aktarım veya yedek seçin. Hesaplarınız değişmedi.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Kısa anahtar: hizmetin tam anahtarını aynen kullanın. Kısa anahtarlar daha az koruma sağlar.",
+  "Account added. Create and verify a new encrypted backup.": "Hesap eklendi. Yeni şifreli yedek oluşturup doğrulayın.",
+  "That account is already in your vault. Nothing was added.": "Bu hesap zaten kasanızda. Hiçbir şey eklenmedi.",
+  "Can't find the setup key?": "Kurulum anahtarını bulamıyor musunuz?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Pano geçmişi anahtarları ve QR resimlerini tutabilir. Kayıtlı kopyaları pano yöneticisinden silin."
 }

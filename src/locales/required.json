@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.",
   "That action stopped because the vault locked. Unlock it and try again.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.",
+  "Account added. Create and verify a new encrypted backup.",
+  "That account is already in your vault. Nothing was added.",
+  "Can't find the setup key?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager."
 ]

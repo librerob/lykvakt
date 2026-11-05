@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Une autre fenêtre a enregistré une modification. Verrouillez puis déverrouillez cette fenêtre et réessayez.",
   "That action stopped because the vault locked. Unlock it and try again.": "Le verrouillage a arrêté l'action. Déverrouillez et réessayez.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Saisissez jusqu'à 1 024 caractères. Une phrase longue et unique est recommandée.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Fichier illisible. Choisissez un export ou une sauvegarde non modifiés. Vos comptes n'ont pas changé."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Fichier illisible. Choisissez un export ou une sauvegarde non modifiés. Vos comptes n'ont pas changé.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Clé courte : utilisez la clé complète du service, sans la modifier. Une clé courte protège moins.",
+  "Account added. Create and verify a new encrypted backup.": "Compte ajouté. Créez et vérifiez une nouvelle sauvegarde chiffrée.",
+  "That account is already in your vault. Nothing was added.": "Ce compte est déjà dans votre coffre. Rien n'a été ajouté.",
+  "Can't find the setup key?": "Vous ne trouvez pas la clé ?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "L'historique du presse-papiers peut garder les clés et images QR. Effacez les copies dans son gestionnaire."
 }

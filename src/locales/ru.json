@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Другое окно сохранило изменение. Заблокируйте и разблокируйте это окно и повторите.",
   "That action stopped because the vault locked. Unlock it and try again.": "Действие прервано блокировкой. Разблокируйте и повторите.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Введите до 1 024 символов. Рекомендуется длинная уникальная парольная фраза.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Не удалось прочитать файл. Выберите неизменённый экспорт или копию. Аккаунты не изменены."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Не удалось прочитать файл. Выберите неизменённый экспорт или копию. Аккаунты не изменены.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Короткий ключ: используйте полный ключ сервиса без изменений. Короткие ключи хуже защищают.",
+  "Account added. Create and verify a new encrypted backup.": "Аккаунт добавлен. Создайте и проверьте новую зашифрованную копию.",
+  "That account is already in your vault. Nothing was added.": "Аккаунт уже есть в хранилище. Ничего не добавлено.",
+  "Can't find the setup key?": "Не можете найти ключ настройки?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "История буфера обмена может сохранять ключи и QR-изображения. Удалите копии в менеджере буфера."
 }

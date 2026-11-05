@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import english from "./locales/en.json";
 import { readPreference, savePreference } from "./preferences";
 export const LANGUAGES = {
   en: "English",
@@ -99,5 +100,13 @@ export function t(
         ? "\u2068" + value + "\u2069"
         : value;
     },
+  );
+}
+
+export function isEnglishFallback(value: string): boolean {
+  return (
+    language !== "en" &&
+    Object.hasOwn(english, value) &&
+    !Object.hasOwn(messages, value)
   );
 }

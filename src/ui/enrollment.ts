@@ -1,3 +1,4 @@
+import { setupHelp } from "./setup-help";
 import { t } from "../i18n";
 import { qrImageInput } from "./qr-input";
 import { enrollmentDraft } from "./enrollment-draft";
@@ -14,7 +15,7 @@ import {
   download,
   readText,
 } from "../dom";
-import { codeFor } from "../otp";
+import { codeFor, normalizeSecret } from "../otp";
 import { validateAccount, type Account } from "../model";
 import {
   parseImport,
@@ -35,6 +36,21 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       secret = input("secret", t("Setup key"), "password");
     label.control.required = secret.control.required = true;
     secret.control.autocomplete = "off";
+    const shortKey = el(
+      "p",
+      { class: "hint short-key-warning", role: "status" },
+      t(
+        "Short setup key: use the service's full key exactly. Short keys provide less protection.",
+      ),
+    );
+    shortKey.hidden = true;
+    secret.control.addEventListener("input", () => {
+      try {
+        shortKey.hidden = normalizeSecret(secret.control.value).length >= 16;
+      } catch {
+        shortKey.hidden = true;
+      }
+    });
     const algorithm = select(
       "algorithm",
       t("Algorithm"),
@@ -95,7 +111,33 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
               favorite: false,
               group: data.get("group"),
             });
-            await preview([account], [], undefined, dialogOperation(ctx));
+            const signal = dialogOperation(ctx),
+              epoch = session.epoch();
+            await codeFor(account);
+            signal.throwIfAborted();
+            session.check();
+            if (epoch !== session.epoch()) return;
+            const vaultData = session.accounts();
+            const checked = previewImport([account], vaultData.accounts);
+            if (checked.conflicts)
+              throw new Error(
+                "An existing account uses this setup key with different settings. Review that account before adding another.",
+              );
+            if (checked.duplicates) {
+              announce(
+                t("That account is already in your vault. Nothing was added."),
+              );
+              return;
+            }
+            vaultData.accounts.push(...checked.accounts);
+            await session.save(vaultData, undefined, undefined, signal);
+            signal.throwIfAborted();
+            closeDialog();
+            ctx.state.view = "codes";
+            render();
+            announce(
+              t("Account added. Create and verify a new encrypted backup."),
+            );
           }),
         el(
           "p",
@@ -108,6 +150,15 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
         issuer.wrapper,
         label.wrapper,
         secret.wrapper,
+        el(
+          "p",
+          { class: "hint" },
+          t(
+            "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.",
+          ),
+        ),
+        setupHelp(),
+        shortKey,
         el(
           "details",
           {},
@@ -124,7 +175,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             group.wrapper,
           ),
         ),
-        submit(t("Review account")),
+        submit(t("Add account")),
         button(
           t("Import a link or QR image"),
           () => importAccounts(),
@@ -200,6 +251,15 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
               {},
               ...skipped.map((entry) =>
                 el("li", {}, `Account ${entry.index}: ${entry.reason}`),
+              ),
+            )
+          : null,
+        accounts.some((account) => account.secret.length < 16)
+          ? el(
+              "p",
+              { class: "hint short-key-warning" },
+              t(
+                "Short setup key: use the service's full key exactly. Short keys provide less protection.",
               ),
             )
           : null,

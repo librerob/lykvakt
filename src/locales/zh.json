@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "另一个窗口已保存更改。请锁定并重新解锁此窗口后再试。",
   "That action stopped because the vault locked. Unlock it and try again.": "保险库锁定导致操作停止，请解锁后重试。",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "请输入最多 1,024 个字符。建议使用较长且独一无二的口令。",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "无法读取文件。请选择未经修改的导出或备份。你的账户没有更改。"
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "无法读取文件。请选择未经修改的导出或备份。你的账户没有更改。",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "设置密钥较短：请原样使用服务提供的完整密钥。短密钥的保护较弱。",
+  "Account added. Create and verify a new encrypted backup.": "账户已添加。请创建并验证新的加密备份。",
+  "That account is already in your vault. Nothing was added.": "此账户已在保险库中，没有添加任何内容。",
+  "Can't find the setup key?": "找不到设置密钥？",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "剪贴板历史可能保留设置密钥和二维码图片。请在剪贴板管理器中清除副本。"
 }

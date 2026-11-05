@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "অন্য উইন্ডো পরিবর্তন সংরক্ষণ করেছে। এই উইন্ডো লক করে আনলক করুন, তারপর চেষ্টা করুন।",
   "That action stopped because the vault locked. Unlock it and try again.": "ভল্ট লক হওয়ায় কাজ থেমেছে। আনলক করে আবার চেষ্টা করুন।",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "সর্বোচ্চ ১,০২৪ অক্ষর লিখুন। দীর্ঘ, অনন্য পাসফ্রেজ সুপারিশ করা হয়।",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "ফাইল পড়া যায়নি। অপরিবর্তিত রপ্তানি বা ব্যাকআপ বাছুন। অ্যাকাউন্ট বদলায়নি।"
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "ফাইল পড়া যায়নি। অপরিবর্তিত রপ্তানি বা ব্যাকআপ বাছুন। অ্যাকাউন্ট বদলায়নি।",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "ছোট চাবি: সেবার সম্পূর্ণ চাবি অপরিবর্তিত ব্যবহার করুন। ছোট চাবির সুরক্ষা কম।",
+  "Account added. Create and verify a new encrypted backup.": "অ্যাকাউন্ট যোগ হয়েছে। নতুন এনক্রিপ্ট করা ব্যাকআপ তৈরি করে যাচাই করুন।",
+  "That account is already in your vault. Nothing was added.": "এই অ্যাকাউন্ট ভল্টে আগেই আছে। কিছু যোগ হয়নি।",
+  "Can't find the setup key?": "সেটআপ চাবি খুঁজে পাচ্ছেন না?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "ক্লিপবোর্ডের ইতিহাস চাবি ও QR ছবি রাখতে পারে। ক্লিপবোর্ড ম্যানেজার থেকে সংরক্ষিত কপি মুছুন।"
 }

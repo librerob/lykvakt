@@ -1,3 +1,6 @@
+import { el } from "../src/dom";
+import { testDocument, type TestElement } from "./helpers/dom";
+import { isEnglishFallback } from "../src/i18n";
 import { afterEach, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import {
@@ -96,4 +99,16 @@ it("keeps English announcements byte-for-byte and ignores inherited properties",
   ).toBe("Copied code for Example demo. Clipboard managers may keep a copy.");
   expect(t("toString")).toBe("toString");
   expect(t("{name}", Object.create({ name: "secret" }))).toBe("{name}");
+});
+
+it("marks untranslated English guidance for screen readers without changing account text", async () => {
+  vi.stubGlobal("document", testDocument);
+  await setLanguage("fr", false);
+  const source =
+    "These tips work offline. The full guide on GitHub is optional.";
+  expect(isEnglishFallback(source)).toBe(true);
+  const node = el("p", {}, t(source)) as unknown as TestElement;
+  expect(node.getAttribute("lang")).toBe("en");
+  const name = el("p", {}, "Close");
+  expect(name.textContent).toBe("Close");
 });

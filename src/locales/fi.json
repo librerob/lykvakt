@@ -170,5 +170,10 @@
   "Another vault window saved a change. Lock and unlock this window, then try again.": "Toinen ikkuna tallensi muutoksen. Lukitse tämä ikkuna, avaa se uudelleen ja yritä uudestaan.",
   "That action stopped because the vault locked. Unlock it and try again.": "Toiminto pysähtyi holvin lukittuessa. Avaa holvi ja yritä uudelleen.",
   "Enter a password of up to 1,024 characters. A long, unique passphrase is recommended.": "Kirjoita enintään 1 024 merkkiä. Suosittelemme pitkää, yksilöllistä salalausetta.",
-  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Tiedostoa ei voitu lukea. Valitse muuttamaton vienti tai varmuuskopio. Tilejäsi ei ole muutettu."
+  "We could not read that file. Choose an unchanged export or backup and try again. Your accounts have not been changed.": "Tiedostoa ei voitu lukea. Valitse muuttamaton vienti tai varmuuskopio. Tilejäsi ei ole muutettu.",
+  "Short setup key: use the service's full key exactly. Short keys provide less protection.": "Lyhyt avain: käytä palvelun koko avainta täsmälleen sellaisenaan. Lyhyet avaimet suojaavat heikommin.",
+  "Account added. Create and verify a new encrypted backup.": "Tili lisätty. Luo ja tarkista uusi salattu varmuuskopio.",
+  "That account is already in your vault. Nothing was added.": "Tili on jo holvissasi. Mitään ei lisätty.",
+  "Can't find the setup key?": "Etkö löydä avainta?",
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Leikepöytähistoria voi säilyttää avaimia ja QR-kuvia. Poista tallennetut kopiot leikepöytäsovelluksesta."
 }
