@@ -1,5 +1,5 @@
 import { OldFormatError } from "./format";
-import { normalizeSecret } from "./otp";
+import { normalizeSecret, SetupKeyLengthError } from "./otp";
 
 export type Algorithm = "SHA-1" | "SHA-256" | "SHA-512";
 export interface Account {
@@ -85,6 +85,8 @@ export function validateAccount(value: unknown): Account {
   if (a.digits !== 5 && a.digits !== 6 && a.digits !== 8)
     throw new Error("Unsupported code length.");
   if (typeof a.favorite !== "boolean") throw new Error("Invalid favorite.");
+  if (typeof a.secret === "string" && a.secret.length > 1024)
+    throw new SetupKeyLengthError();
   return {
     id: text(a.id, 100, false),
     issuer: text(a.issuer),

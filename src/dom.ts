@@ -1,3 +1,4 @@
+import { t, currentLanguage, isEnglishFallback } from "./i18n";
 import { DOCUMENTATION_URL } from "./documentation";
 
 export type Child = Node | string | null | undefined | false;
@@ -12,6 +13,13 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   for (const child of children)
     if (child !== null && child !== undefined && child !== false)
       node.append(child);
+  if (
+    !attributes.lang &&
+    children.some(
+      (child) => typeof child === "string" && isEnglishFallback(child),
+    )
+  )
+    node.setAttribute("lang", "en");
   return node;
 }
 export function button(
@@ -48,8 +56,9 @@ export function select(
   label: string,
   options: Record<string, string>,
   selected: string,
+  labelId = `label-${name}`,
 ): { wrapper: HTMLLabelElement; control: HTMLSelectElement } {
-  const control = el("select", { name, "aria-labelledby": `label-${name}` });
+  const control = el("select", { name, "aria-labelledby": labelId });
   for (const [value, title] of Object.entries(options))
     control.append(el("option", { value }, title));
   control.value = selected;
@@ -57,7 +66,7 @@ export function select(
     wrapper: el(
       "label",
       { class: "field" },
-      el("span", { id: `label-${name}` }, label),
+      el("span", { id: labelId }, label),
       control,
     ),
     control,
@@ -117,7 +126,7 @@ export function technicalDetails(...children: Child[]): HTMLDetailsElement {
   return el(
     "details",
     { class: "technical-details", "data-technical": "" },
-    el("summary", {}, "Technical details"),
+    el("summary", {}, t("Technical details")),
     ...children,
   );
 }
@@ -134,15 +143,16 @@ export function svg<K extends keyof SVGElementTagNameMap>(
   return node;
 }
 
-export function documentationLink(): HTMLAnchorElement {
+export function documentationLink(anchor = ""): HTMLAnchorElement {
   return el(
     "a",
     {
-      href: DOCUMENTATION_URL,
+      href: DOCUMENTATION_URL + anchor,
+      lang: currentLanguage(),
       target: "_blank",
       rel: "noopener noreferrer",
       class: "documentation-link",
     },
-    "Full documentation on GitHub",
+    t("Full documentation on GitHub"),
   );
 }

@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { button, el, svg } from "../dom";
 import { bindSearch } from "../keyboard";
 import { emptySearchMessage } from "../help";
@@ -65,7 +66,7 @@ export function createAccounts(ctx: AppContext) {
     maskAll();
     for (const code of list?.querySelectorAll<HTMLElement>(".otp") ?? []) {
       code.textContent = masks.get(code) ?? "••• •••";
-      code.setAttribute("aria-label", "Code hidden");
+      code.setAttribute("aria-label", t("Code hidden"));
       code.setAttribute("aria-pressed", "false");
     }
     for (const next of list?.querySelectorAll<HTMLElement>(".next-code") ??
@@ -117,12 +118,16 @@ export function createAccounts(ctx: AppContext) {
       return;
     session.check();
     const name = [current.issuer, current.label].filter(Boolean).join(" ");
-    announce(`Copied code for ${name}. Clipboard managers may keep a copy.`);
+    announce(
+      t("Copied code for {name}. Clipboard managers may keep a copy.", {
+        name,
+      }),
+    );
   }
   function firstRunTip(): HTMLElement | null {
     if (!ctx.state.firstRunTip) return null;
     return button(
-      "Got it",
+      t("Got it"),
       () => {
         ctx.state.firstRunTip = false;
         savePreference("firstRunTips", "false");
@@ -143,12 +148,16 @@ export function createAccounts(ctx: AppContext) {
           /* The explicit account action reports a load failure. */
         });
     }
-    const add = button("+ Add account", () => addAccount(), "button primary");
+    const add = button(
+      t("+ Add account"),
+      () => addAccount(),
+      "button primary",
+    );
     const searchInput = el("input", {
       name: "search",
       type: "search",
-      placeholder: "Search accounts",
-      "aria-label": "Search accounts",
+      placeholder: t("Search accounts"),
+      "aria-label": t("Search accounts"),
       autocomplete: "off",
     });
     searchInput.value = search;
@@ -158,19 +167,19 @@ export function createAccounts(ctx: AppContext) {
       () =>
         run(async () => {
           if (matchingIds[0]) await copyAccount(matchingIds[0]);
-          else announce("No matching account. Try a different search.");
+          else announce(t("No matching account. Try a different search."));
         }),
-      () => announce(emptySearchMessage),
+      () => announce(t(emptySearchMessage)),
     );
     searchInput.addEventListener("input", () => {
       search = searchInput.value;
       drawAccounts();
     });
     const filter = button(
-      favorites ? "★ Favorites" : "☆ Favorites",
+      favorites ? t("★ Favorites") : t("☆ Favorites"),
       () => {
         favorites = !favorites;
-        filter.textContent = favorites ? "★ Favorites" : "☆ Favorites";
+        filter.textContent = favorites ? t("★ Favorites") : t("☆ Favorites");
         filter.setAttribute("aria-pressed", String(favorites));
         drawAccounts();
       },
@@ -180,10 +189,10 @@ export function createAccounts(ctx: AppContext) {
     list = el("div", { class: "account-list" });
     backupNotice = el(
       "aside",
-      { class: "backup-notice", "aria-label": "Backup reminder" },
-      el("span", {}, "Backup not verified."),
+      { class: "backup-notice", "aria-label": t("Backup reminder") },
+      el("span", {}, t("Backup not verified.")),
       button(
-        "Review backup",
+        t("Review backup"),
         () => {
           ctx.state.view = "backups";
           clear();
@@ -201,20 +210,20 @@ export function createAccounts(ctx: AppContext) {
       },
       "button text",
     );
-    dismiss.setAttribute("aria-label", "Dismiss backup reminder");
+    dismiss.setAttribute("aria-label", t("Dismiss backup reminder"));
     backupNotice.append(dismiss);
     backupNotice.hidden = true;
     searchRow = el("div", { class: "search-row" }, searchInput, filter);
     const section = el(
       "section",
       { class: "content" },
-      el("h1", { class: "sr-only" }, "Accounts"),
+      el("h1", { class: "sr-only" }, t("Accounts")),
       el(
         "div",
         { class: "account-tools" },
         add,
         button(
-          "Import",
+          t("Import"),
           () => {
             ctx.state.view = "backups";
             clear();
@@ -275,9 +284,9 @@ export function createAccounts(ctx: AppContext) {
         "div",
         {
           class: "next-code",
-          "aria-label": "Next code, valid after the current one expires",
+          "aria-label": t("Next code, valid after the current one expires"),
         },
-        el("span", { class: "hint" }, "Next code"),
+        el("span", { class: "hint" }, t("Next code")),
         el("span", { class: "next-code-value" }),
       );
       next.hidden = true;
@@ -303,7 +312,7 @@ export function createAccounts(ctx: AppContext) {
                   next.querySelector(".next-code-value")!.textContent = "";
                   code.setAttribute(
                     "aria-label",
-                    `Reveal code for ${label} (hidden)`,
+                    t("Reveal code for {name} (hidden)", { name: label }),
                   );
                   code.setAttribute("aria-pressed", "false");
                 }, 30_000),
@@ -313,14 +322,20 @@ export function createAccounts(ctx: AppContext) {
           }),
         "otp",
       );
-      code.setAttribute("aria-label", `Reveal code for ${label} (hidden)`);
+      code.setAttribute(
+        "aria-label",
+        t("Reveal code for {name} (hidden)", { name: label }),
+      );
       code.setAttribute("aria-pressed", "false");
       masks.set(code, mask);
-      code.setAttribute("title", "Reveal or hide this code");
+      code.setAttribute("title", t("Reveal or hide this code"));
       const remaining = el("span", {
         class: a.type === "hotp" ? "remaining counter" : "remaining",
         role: "img",
-        ...(a.type === "hotp" ? { title: `Counter ${a.counter}` } : {}),
+        "data-label": t("Counter"),
+        ...(a.type === "hotp"
+          ? { title: t("Counter {counter}", { counter: a.counter }) }
+          : {}),
       });
       if (a.type !== "hotp")
         remaining.append(
@@ -345,11 +360,14 @@ export function createAccounts(ctx: AppContext) {
           el("span", { class: "ring-number", "aria-hidden": "true" }),
         );
       const copy = button(
-        "Copy",
+        t("Copy"),
         () => run(() => copyAccount(a.id)),
         "button row-copy",
       );
-      copy.setAttribute("aria-label", `Copy code for ${label}`);
+      copy.setAttribute(
+        "aria-label",
+        t("Copy code for {name}", { name: label }),
+      );
       copy.setAttribute(
         "title",
         label + (a.type === "hotp" ? ` · Counter ${a.counter}` : ""),
@@ -368,23 +386,25 @@ export function createAccounts(ctx: AppContext) {
       );
       favorite.setAttribute(
         "aria-label",
-        `${a.favorite ? "Remove" : "Add"} favorite: ${label}`,
+        t(a.favorite ? "Remove favorite: {name}" : "Add favorite: {name}", {
+          name: label,
+        }),
       );
       const actions = el(
         "div",
         { class: "row-menu stack" },
-        button("Edit", () => editAccount(a.id), "button text"),
+        button(t("Edit"), () => editAccount(a.id), "button text"),
         favorite,
       );
       if (a.type === "hotp")
         actions.append(
           button(
-            "Advance counter…",
+            t("Advance counter…"),
             () =>
               confirmAction(
-                "Advance HOTP counter?",
+                t("Advance HOTP counter?"),
                 `Current counter: ${a.counter}. Advance only after the service has consumed this code. Opening the vault never advances it.`,
-                "Advance once",
+                t("Advance once"),
                 async (signal) => {
                   const data = session.accounts(),
                     current = data.accounts.find((x) => x.id === a.id)!;
@@ -404,8 +424,12 @@ export function createAccounts(ctx: AppContext) {
         el(
           "div",
           { class: "account-name", role: "group", "aria-label": label },
-          el("h2", { title: a.issuer || a.label }, a.issuer || a.label),
-          el("p", { title: a.label }, a.label),
+          el(
+            "h2",
+            { title: a.issuer || a.label, dir: "auto" },
+            a.issuer || a.label,
+          ),
+          el("p", { title: a.label, dir: "auto" }, a.label),
         ),
         el(
           "div",
@@ -421,7 +445,11 @@ export function createAccounts(ctx: AppContext) {
         el(
           "details",
           { class: "account-more" },
-          el("summary", { "aria-label": `More for ${label}` }, "⋯"),
+          el(
+            "summary",
+            { "aria-label": t("More for {name}", { name: label }) },
+            "⋯",
+          ),
           actions,
         ),
       );
@@ -435,21 +463,25 @@ export function createAccounts(ctx: AppContext) {
           {
             class: "empty",
             ...(!search && !favorites && ctx.state.firstRunTip
-              ? { role: "complementary", "aria-label": "Getting started" }
+              ? { role: "complementary", "aria-label": t("Getting started") }
               : {}),
           },
           el("div", { class: "empty-symbol", "aria-hidden": "true" }, "＋"),
           el(
             "h2",
             {},
-            search || favorites ? "No matching accounts" : "A fresh start.",
+            search || favorites
+              ? t("No matching accounts")
+              : t("A fresh start."),
           ),
           el(
             "p",
             { class: "muted" },
             search || favorites
-              ? "Try a different search or filter."
-              : "Add a setup key or import your accounts in Backup. Keep your password and test a backup.",
+              ? t("Try a different search or filter.")
+              : t(
+                  "Add a setup key or import your accounts in Backup. Keep your password and test a backup.",
+                ),
           ),
           !search && !favorites ? firstRunTip() : null,
         ),
@@ -508,14 +540,22 @@ export function createAccounts(ctx: AppContext) {
         code.setAttribute(
           "aria-label",
           visible
-            ? `Code for ${a.issuer} ${a.label}: ${cached.code}`
-            : `Reveal code for ${a.issuer} ${a.label} (hidden)`,
+            ? t("Code for {name}: {code}", {
+                name: `${a.issuer} ${a.label}`,
+                code: cached.code,
+              })
+            : t("Reveal code for {name} (hidden)", {
+                name: `${a.issuer} ${a.label}`,
+              }),
         );
         const remaining = a.period - (Math.floor(now / 1000) % a.period);
         const indicator = row.querySelector(".remaining")!;
         if (a.type === "hotp") {
           indicator.textContent = a.counter;
-          indicator.setAttribute("aria-label", `Counter ${a.counter}`);
+          indicator.setAttribute(
+            "aria-label",
+            t("Counter {counter}", { counter: a.counter }),
+          );
         } else {
           indicator
             .querySelector(".ring-progress")!
@@ -527,7 +567,12 @@ export function createAccounts(ctx: AppContext) {
             remaining <= 10 ? String(remaining) : "";
           indicator.setAttribute(
             "aria-label",
-            `${remaining} seconds remaining${remaining <= 5 ? ", expiring soon" : ""}`,
+            t(
+              remaining <= 5
+                ? "{seconds} seconds remaining, expiring soon"
+                : "{seconds} seconds remaining",
+              { seconds: remaining },
+            ),
           );
         }
         row.classList.toggle("expiring", a.type !== "hotp" && remaining <= 5);

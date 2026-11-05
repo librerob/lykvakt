@@ -1,10 +1,11 @@
+import { t } from "../i18n";
 import { el, input } from "../dom";
 import { prepareTransfer } from "../import";
 import type { Account } from "../model";
 export function transferReview(accounts: Account[]) {
   const plan = prepareTransfer(accounts);
   const consent = plan.renamed.length
-    ? input("transferNames", "Use these transfer names", "checkbox")
+    ? input("transferNames", t("Use these transfer names"), "checkbox")
     : undefined;
   if (consent) consent.control.required = true;
   return {
@@ -16,12 +17,14 @@ export function transferReview(accounts: Account[]) {
           el(
             "p",
             {},
-            "Some names need changes for other authenticators. Review this transfer copy. Your saved names will stay unchanged.",
+            t(
+              "Some names need changes for other authenticators. Review this transfer copy. Your saved names will stay unchanged.",
+            ),
           ),
           el(
             "details",
             {},
-            el("summary", {}, "Review transfer names"),
+            el("summary", {}, t("Review transfer names")),
             el(
               "ul",
               { class: "transfer-names" },

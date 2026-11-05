@@ -328,7 +328,7 @@ input[type="checkbox"] {
   white-space: nowrap;
 }
 .remaining.counter::before {
-  content: "Counter";
+  content: attr(data-label);
   display: block;
   font-size: var(--t1);
   line-height: 14px;
@@ -802,4 +802,72 @@ footer {
 .offline-help h3 {
   font-size: var(--t3);
   margin: 4px 0 0;
+}
+
+/* Keep code order stable in right-to-left interfaces. */
+.code-cell,
+.otp,
+.next-code-value,
+.generated-passphrase {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+[dir="rtl"] .account-name {
+  text-align: start;
+}
+.language-choice select {
+  width: 100%;
+}
+.language-choice .hint {
+  margin-top: 8px;
+}
+html:not([lang="en"]) .help-link {
+  max-width: 140px;
+  white-space: normal;
+}
+html:not([lang="en"]) .backup-notice {
+  flex-wrap: wrap;
+}
+html:not([lang="en"]) .backup-notice > span {
+  flex-basis: 100%;
+  white-space: normal;
+}
+html:not([lang="en"]) .search-row > .button {
+  max-width: 45%;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .documentation-link {
+  white-space: normal;
+}
+
+/* Longer labels must fit the same popup width in every language. */
+html:not([lang="en"]) .header-actions {
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
+  gap: 8px;
+}
+html:not([lang="en"]) .header-actions > .button.tonal {
+  flex-shrink: 0;
+  max-width: 144px;
+  padding-inline: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .help-link {
+  min-width: 0;
+  flex: 0 1 auto;
+  padding-inline: 4px;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .nav-item {
+  min-width: 0;
+  flex: 1 1 0;
+  padding-inline: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:not([lang="en"]) .search-row > .button {
+  min-width: 0;
+  white-space: normal;
 }

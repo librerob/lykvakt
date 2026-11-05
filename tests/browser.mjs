@@ -36,6 +36,7 @@ const base = `chrome-extension://${id}/index.html?window`;
 const password = "synthetic master passphrase only";
 const secret = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
 const uri = `otpauth://totp/GitHub:demo%40example.test?secret=${secret}&issuer=GitHub`;
+const unlockMeasurements = [];
 let checks = 0;
 async function check(name, action) {
   await action();
@@ -612,35 +613,66 @@ try {
     await expect(page.locator(".account")).toHaveCount(2);
   });
   await check(
-    "short demonstration keys explain QR and manual rejection without changing the vault",
+    "short service keys work through manual entry and QR review without silently saving an import",
     async () => {
-      const before = await storedVault();
-      await click("Import accounts");
-      await page.getByLabel("Read a QR image locally").setInputFiles({
-        name: "public-demo.png",
-        mimeType: "image/png",
-        buffer: await QRCode.toBuffer(
-          "otpauth://totp/2FAS:test?secret=2FASTEST&issuer=2FAS",
-        ),
-      });
-      await expect(page.getByRole("status")).toContainText("10 to 640 bytes");
-      await expect(page.getByRole("status")).not.toContainText(
-        "Check your password",
-      );
-      await expect(page.getByRole("dialog")).toContainText("Import accounts");
-      expect(await storedVault()).toEqual(before);
-      await closeImport();
-      await click("+ Add account");
-      await page.getByLabel("Service name", { exact: true }).fill("2FAS");
-      await page
-        .getByLabel("Account name or email", { exact: true })
-        .fill("test@example.test");
-      await page.getByLabel("Setup key", { exact: true }).fill("2FASTEST");
-      await click("Review account");
-      await expect(page.getByRole("status")).toContainText("10 to 640 bytes");
-      expect(await storedVault()).toEqual(before);
-      await click("Close");
-      await expect(page.locator(".account")).toHaveCount(2);
+      const prior = page;
+      try {
+        for (const mode of ["manual", "qr"]) {
+          const isolated = await launch(
+            await mkdtemp(join(tmpdir(), "lykvakt-short-key-")),
+          );
+          try {
+            page = await isolated.newPage();
+            await page.goto(base);
+            await page.getByLabel("Create a master password").fill(password);
+            await page.getByLabel("Confirm master password").fill(password);
+            await click("Create encrypted vault");
+            await expect(
+              page.getByRole("button", { name: "+ Add account", exact: true }),
+            ).toBeVisible({ timeout: 60000 });
+            const before = await storedVault();
+            if (mode === "manual") {
+              await click("+ Add account");
+              await page
+                .getByLabel("Service name", { exact: true })
+                .fill("2FAS");
+              await page
+                .getByLabel("Account name or email", { exact: true })
+                .fill("test@example.test");
+              await page
+                .getByLabel("Setup key", { exact: true })
+                .fill("2FASTEST");
+              await expect(page.locator(".short-key-warning")).toBeVisible();
+            } else {
+              await click("Import accounts");
+              await page.getByLabel("Read a QR image locally").setInputFiles({
+                name: "public-demo.png",
+                mimeType: "image/png",
+                buffer: await QRCode.toBuffer(
+                  "otpauth://totp/2FAS:test?secret=2FASTEST&issuer=2FAS",
+                ),
+              });
+              await expect(page.getByRole("dialog")).toContainText(
+                "Review accounts",
+              );
+              await expect(page.locator(".short-key-warning")).toBeVisible();
+              expect(await storedVault()).toEqual(before);
+            }
+            await click("Add account");
+            await expect(page.getByRole("dialog")).toHaveCount(0);
+            await expect(page.locator(".account")).toHaveCount(1);
+            expect(await storedVault()).not.toEqual(before);
+            expect(JSON.stringify(await storedVault())).not.toContain(
+              "2FASTEST",
+            );
+          } finally {
+            await isolated.close();
+          }
+        }
+      } finally {
+        page = prior;
+        await page.bringToFront();
+      }
     },
   );
   await check(
@@ -1833,7 +1865,7 @@ try {
         await page
           .getByLabel("Setup key", { exact: true })
           .fill("JBSWY3DPEHPK3PX!");
-        await click("Review account");
+        await click("Add account");
         const message = page.locator(".dialog-status > p");
         await expect(message).toContainText("letters A–Z and digits 2–7");
         await expect(message).not.toContainText("password");
@@ -2400,11 +2432,27 @@ try {
               );
             }
           }
-          expect(
-            await page.evaluate(
-              () => document.documentElement.scrollWidth <= innerWidth,
-            ),
-          ).toBe(true);
+          const fits = await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          );
+          if (!fits)
+            console.error(
+              "Localized overflow",
+              code,
+              await page.evaluate(() =>
+                [...document.querySelectorAll("*")]
+                  .filter(
+                    (node) => node.getBoundingClientRect().right > innerWidth,
+                  )
+                  .slice(0, 8)
+                  .map((node) => ({
+                    tag: node.tagName,
+                    className: String(node.className),
+                    right: node.getBoundingClientRect().right,
+                  })),
+              ),
+            );
+          expect(fits).toBe(true);
         };
         for (const width of [360, 400, 480]) {
           await page.setViewportSize({ width, height: 760 });
@@ -2672,7 +2720,6 @@ try {
           .getByLabel("Account name or email", { exact: true })
           .fill("alice:work");
         await page.getByLabel("Setup key", { exact: true }).fill(secret);
-        await click("Review account");
         await click("Add account");
         await click("Backup");
         await click("Export plaintext OTP links…");
@@ -3336,7 +3383,7 @@ try {
         });
         await click("+ Add account");
         await expect(
-          page.getByRole("button", { name: "Review account", exact: true }),
+          page.getByRole("button", { name: "Add account", exact: true }),
         ).toBeVisible();
         await page
           .getByLabel("Service name", { exact: true })
@@ -3585,6 +3632,231 @@ try {
         ).toBeVisible();
       }),
   );
+  await check(
+    "21 local language choices persist before unlock with RTL and accessible help",
+    async () => {
+      const prior = page;
+      const isolated = await launch(
+        await mkdtemp(join(tmpdir(), "lykvakt-languages-")),
+      );
+      try {
+        page = await isolated.newPage();
+        await page.goto(base);
+        await expect(page.locator("#app")).toHaveAttribute(
+          "aria-busy",
+          "false",
+        );
+        for (const code of [
+          "en",
+          "es",
+          "fr",
+          "de",
+          "pt",
+          "ru",
+          "ar",
+          "hi",
+          "bn",
+          "ur",
+          "id",
+          "ja",
+          "ko",
+          "zh",
+          "tr",
+          "ro",
+          "nb",
+          "fi",
+          "sv",
+          "is",
+          "da",
+        ]) {
+          await page.locator(".help-link").click();
+          await page.locator('select[name="language"]').selectOption(code);
+          await expect(page.locator("html")).toHaveAttribute("lang", code);
+          await expect(page.getByRole("dialog")).toHaveCount(0);
+          await expect(page.locator("html")).toHaveAttribute(
+            "dir",
+            ["ar", "ur"].includes(code) ? "rtl" : "ltr",
+          );
+          await expect(page.locator('input[name="password"]')).toBeVisible();
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          await page.reload();
+          await expect(page.locator("html")).toHaveAttribute("lang", code);
+          await expect(page.locator("#app")).toHaveAttribute(
+            "aria-busy",
+            "false",
+          );
+          await page.locator(".help-link").click();
+          await expect(page.locator('select[name="language"]')).toHaveValue(
+            code,
+          );
+          await helpAxe("language-" + code);
+          if (["nb", "ar"].includes(code)) await screenshot("language-" + code);
+          await page.locator(".dialog-head button").click();
+        }
+      } finally {
+        await isolated.close();
+        page = prior;
+        await page.bringToFront();
+      }
+    },
+  );
+  await check(
+    "a password unlock derives once and an unexpired resume derives zero times",
+    () =>
+      sharedProfile(async () => {
+        await click("Lock");
+        const workers = [];
+        page.on("worker", (worker) => {
+          if (/argon2\.worker/.test(worker.url())) workers.push(worker.url());
+        });
+        await page
+          .getByLabel("Master password", { exact: true })
+          .fill(password);
+        const start = performance.now();
+        await click("Unlock vault");
+        await expect(
+          page.getByRole("button", { name: "Lock", exact: true }),
+        ).toBeVisible();
+        const milliseconds = Math.round(performance.now() - start);
+        expect(workers).toHaveLength(1);
+        const active = await storedVault();
+        expect({
+          m: active.password.m,
+          t: active.password.t,
+          p: active.password.p,
+        }).toEqual({ m: 65536, t: 3, p: 1 });
+        await page.reload();
+        await expect(
+          page.getByRole("button", { name: "Lock", exact: true }),
+        ).toBeVisible();
+        expect(workers).toHaveLength(1);
+        const measured = {
+          milliseconds,
+          passwordWorkers: 1,
+          resumeWorkers: 0,
+          mKiB: 65536,
+          t: 3,
+          p: 1,
+        };
+        unlockMeasurements.push(measured);
+        console.log("UNLOCK_BENCHMARK", JSON.stringify(measured));
+      }),
+  );
+  await check(
+    "manual setup help preserves fields and links to optional QR guidance",
+    () =>
+      sharedProfile(async () => {
+        await click("+ Add account");
+        await page.getByLabel("Service name", { exact: true }).fill("Example");
+        await page
+          .getByLabel("Account name or email", { exact: true })
+          .fill("demo@example.test");
+        await page.getByLabel("Setup key", { exact: true }).fill("2FASTEST");
+        await page.locator(".setup-help summary").click();
+        await expect(page.locator(".setup-help")).toContainText(
+          "cropped screenshot",
+        );
+        await expect(page.getByLabel("Setup key", { exact: true })).toHaveValue(
+          "2FASTEST",
+        );
+        await expect(page.locator(".setup-help a")).toHaveAttribute(
+          "href",
+          "https://github.com/librerob/lykvakt/blob/main/docs/usage.md#if-you-cannot-find-a-setup-key",
+        );
+        await helpAxe("setup-qr-help");
+        await page.locator(".setup-help summary").click();
+        await click("Add account");
+        await expect(page.getByRole("dialog")).toHaveCount(0);
+        await expect(page.locator(".account")).toHaveCount(1);
+      }),
+  );
+  await check(
+    "localized account cards preserve names, code order and accessibility in all 21 languages",
+    () =>
+      sharedProfile(async ({ isolated }) => {
+        const requests = [];
+        isolated.on("request", (request) => {
+          if (/^https?:/.test(request.url())) requests.push(request.url());
+        });
+        await click("+ Add account");
+        await page.getByLabel("Service name", { exact: true }).fill("Close");
+        await page
+          .getByLabel("Account name or email", { exact: true })
+          .fill("Backup");
+        await page.getByLabel("Setup key", { exact: true }).fill(secret);
+        await click("Add account");
+        await expect(page.getByRole("dialog")).toHaveCount(0);
+        for (const code of [
+          "en",
+          "es",
+          "fr",
+          "de",
+          "pt",
+          "ru",
+          "ar",
+          "hi",
+          "bn",
+          "ur",
+          "id",
+          "ja",
+          "ko",
+          "zh",
+          "tr",
+          "ro",
+          "nb",
+          "fi",
+          "sv",
+          "is",
+          "da",
+        ]) {
+          await page.locator("nav .nav-item").nth(2).click();
+          await page.locator('select[name="language"]').selectOption(code);
+          await expect(page.locator("html")).toHaveAttribute("lang", code);
+          await page.locator("nav .nav-item").first().click();
+          await expect(page.locator(".account-name h2")).toHaveText("Close");
+          await expect(page.locator(".account-name p")).toHaveText("Backup");
+          await page.locator(".otp").click();
+          await expect(page.locator(".otp")).toHaveText(/^\d{3} \d{3}$/);
+          expect(
+            await page
+              .locator(".code-cell")
+              .evaluate((node) => getComputedStyle(node).direction),
+          ).toBe("ltr");
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          ).toBe(true);
+          await helpAxe("language-accounts-" + code);
+        }
+        await page.locator("nav .nav-item").nth(2).click();
+        await page.locator(".help-link").click();
+        await expect(page.locator("dialog select[name=language]")).toHaveCount(
+          1,
+        );
+        expect(
+          await page
+            .locator("select[name=language]")
+            .evaluateAll((controls) => {
+              const ids = controls.map((control) =>
+                control.getAttribute("aria-labelledby"),
+              );
+              return (
+                ids.every(
+                  (id) =>
+                    id && document.querySelectorAll("#" + id).length === 1,
+                ) && new Set(ids).size === ids.length
+              );
+            }),
+        ).toBe(true);
+        await helpAxe("language-settings-help");
+        expect(requests).toEqual([]);
+      }),
+  );
   await check("no external requests during vault workflows", async () =>
     expect(network).toEqual([]),
   );
@@ -3596,6 +3868,7 @@ try {
     JSON.stringify(
       {
         checks,
+        unlockMeasurements,
         browser: context.browser()?.version(),
         platform: process.platform,
         hardware: "No physical authenticators tested",

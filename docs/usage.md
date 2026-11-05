@@ -42,6 +42,8 @@ HOTP accounts use a counter. Copying does not advance it. Confirm **More → Adv
 
 ## Backups
 
+For numbered instructions, see [Back up and restore your accounts](backups.md). It covers saving, checking, restoring into a fresh vault and merging into an existing one.
+
 In **Backup**, create an encrypted backup with a separate passphrase. You must confirm the master password before exporting account secrets.
 
 Save the file outside the browser. Then choose **Verify or restore a backup**, open the actual saved file and enter its backup passphrase. Verification tests the file and compares its accounts without replacing your active vault. A matching result does not prove that websites will accept the codes.
@@ -73,3 +75,39 @@ The vault and code generation work offline. Essential help is bundled in the app
 Copy the QR image or a cropped screenshot, open **Backup → Import accounts**, focus **Setup links or export text** and paste with Ctrl+V (Command+V on Mac). Review the accounts, then choose **Add account** or **Add N accounts**. Image-file drops use the same review. A dropped website image may supply only a URL; Lykvakt explains this and never downloads it.
 
 On Windows, Win+Shift+S opens Snipping Tool; select the QR and copy the image if needed. On Mac, Control+Shift+Command+4 copies a selected region. Screenshot tools may save files automatically, and clipboard history may retain images containing setup secrets. Check those settings if you want to avoid extra copies. See [Microsoft’s screenshot guide](https://support.microsoft.com/en-us/windows/apps/use-snipping-tool-to-capture-screenshots) and [Apple’s guide](https://support.apple.com/en-gb/102646).
+
+## If you cannot find a setup key
+
+Some services show a QR code first and hide the text key behind **Can't scan?**, **Enter manually**, **Show key** or a similar link. Use the full setup key supplied by the service, not the short code used to sign in. Do not invent extra characters or pad a short key.
+
+If there is only a QR image:
+
+1. Copy the QR image, or take a tightly cropped screenshot of just the QR. On Windows, use Win+Shift+S. On Mac, Control+Shift+Command+4 copies a region to the clipboard. On Linux, use your screenshot tool's copy-region option.
+2. Open Lykvakt, choose **Add account → Import a link or QR image** or **Backup → Import accounts**, and focus **Setup links or export text**.
+3. Paste with Ctrl+V or Command+V. You can also drop an image file into that box. To choose a saved image, use the separate window.
+4. Review the account details and any skipped entries, then choose **Add account**. Check the codes before removing your old authenticator.
+
+Lykvakt reads the image on your device. It does not capture the page, fetch a dropped image URL or upload the image. Screenshot tools may also save a file, and clipboard history may keep the image. See the next section before sharing screenshots.
+
+Not every QR is an OTP setup code. Some are login links, device-pairing codes or approvals for a service's own app. If Lykvakt cannot import it, use the service's manual setup option, a supported export, or its recovery instructions. A screenshot cannot convert a proprietary approval method into standard OTP.
+
+Standard OTP setup keys shorter than 10 bytes, including the public `2FASTEST` demonstration key, are accepted with a warning. A short key is weaker, but changing it would generate the wrong codes. Older Lykvakt versions reject these short keys. Manual entry saves with **Add account** after validation; bulk imports still require a review.
+
+## Clipboard and screenshot copies
+
+A setup key or account QR is a long-lived secret: someone holding it can generate your codes. Clipboard history, clipboard-sync tools and screenshot folders may keep copies. Lykvakt cannot erase those copies or guarantee secure deletion.
+
+- **Windows:** open clipboard history with Win+V and remove the sensitive item. **Clear all** leaves pinned items, so remove those separately. Check clipboard-sync settings and any other clipboard manager too. See [Microsoft's clipboard guide](https://support.microsoft.com/en-us/windows/apps/using-the-clipboard).
+- **Mac:** check clipboard history, any clipboard manager and Handoff/Universal Clipboard settings. Universal Clipboard can make copied content available on nearby Apple devices. See [Apple's guide](https://support.apple.com/en-nz/102430).
+- **Linux:** use the history and clearing controls of your desktop environment or clipboard manager; there is no single procedure shared by every desktop.
+- **All systems:** copying unrelated text replaces the current clipboard item but does not clear copies saved elsewhere. Check whether your screenshot tool saved an image file and remove temporary copies after verifying the account.
+
+Lykvakt does not automatically overwrite the clipboard: a delayed clear could destroy something you copied afterward and would still leave history copies. It does not request clipboard-read access. Images pasted into Import accounts are read from that explicit paste event.
+
+## If unlocking feels slow
+
+A password unlock deliberately runs Argon2id locally with 64 MiB, three passes and one lane. Memory cost is only part of the work; browser JavaScript engines, device load and power settings also affect the delay. The account list is not the main password-checking work.
+
+An unexpired unlock session reopens without running the password derivation again. Keep the default five-minute inactivity timer, or choose a longer timed option in Settings if that fits your device use. **Lock** still ends the session in every view. The browser-restart option disables inactivity locking and has a different security trade-off.
+
+Lykvakt does not silently lower password protection to speed up a device. A benchmark from a different browser or computer is not a guarantee for yours. Maintainers can use the synthetic Node benchmark and browser CI's unlock measurements without uploading a real vault or password.

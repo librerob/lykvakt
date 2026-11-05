@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 export function qrImageInput(
   target: HTMLElement,
   read: (files: File[]) => Promise<void>,
@@ -16,7 +17,9 @@ export function qrImageInput(
     if (files.length) void read(files);
     else
       explain(
-        "This drop contains no image file. Copy the QR image and paste it here, or choose an image file. Links are not downloaded.",
+        t(
+          "This drop contains no image file. Copy the QR image and paste it here, or choose an image file. Links are not downloaded.",
+        ),
       );
   });
 }

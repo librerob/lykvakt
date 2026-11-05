@@ -1,3 +1,5 @@
+import { languageChoice } from "./language";
+import { t } from "../i18n";
 import { withGenerator } from "./passphrase";
 import { button, el, input, select, form, submit } from "../dom";
 import { preferenceEnabled, savePreference } from "../preferences";
@@ -11,12 +13,16 @@ export function createSettings(ctx: AppContext) {
   const { session, isExtension, run, announce, modal, closeDialog, render } =
     ctx;
   function settingsView(): HTMLElement {
-    const nextCode = input("showNextCode", "Show next code", "checkbox");
+    const nextCode = input("showNextCode", t("Show next code"), "checkbox");
     nextCode.control.checked = preferenceEnabled("showNextCode");
     nextCode.control.addEventListener("change", () =>
       savePreference("showNextCode", String(nextCode.control.checked)),
     );
-    const showCodes = input("alwaysShowCodes", "Always show codes", "checkbox");
+    const showCodes = input(
+      "alwaysShowCodes",
+      t("Always show codes"),
+      "checkbox",
+    );
     showCodes.control.checked = preferenceEnabled("alwaysShowCodes");
     showCodes.control.addEventListener("change", () => {
       savePreference("alwaysShowCodes", String(showCodes.control.checked));
@@ -27,8 +33,13 @@ export function createSettings(ctx: AppContext) {
     const seven = typeof keys === "object" && keys.default === "Ctrl+Shift+7";
     const timeout = select(
       "timeout",
-      "Auto-lock",
-      AUTO_LOCK_OPTIONS,
+      t("Auto-lock"),
+      Object.fromEntries(
+        Object.entries(AUTO_LOCK_OPTIONS).map(([value, label]) => [
+          value,
+          t(label),
+        ]),
+      ),
       String(session.timeout),
     );
     timeout.control.addEventListener("change", () => {
@@ -41,35 +52,40 @@ export function createSettings(ctx: AppContext) {
     return el(
       "section",
       { class: "content stack" },
-      el("h1", {}, "Settings"),
+      el("h1", {}, t("Settings")),
+      languageChoice(),
       el(
         "div",
         { class: "settings-section stack" },
-        el("h2", {}, "Make it yours"),
+        el("h2", {}, t("Make it yours")),
         showCodes.wrapper,
         nextCode.wrapper,
       ),
       el(
         "div",
         { class: "settings-section stack" },
-        el("h2", {}, "Vault security"),
+        el("h2", {}, t("Vault security")),
         timeout.wrapper,
 
         el(
           "p",
           { class: "hint" },
-          "Stay unlocked across popup and window closures until this timer expires. The default is 5 minutes of inactivity. Lock ends the session in every view; restarting your browser asks for your password again.",
+          t(
+            "Stay unlocked across popup and window closures until this timer expires. The default is 5 minutes of inactivity. Lock ends the session in every view; restarting your browser asks for your password again.",
+          ),
         ),
         el(
           "p",
           { class: "hint" },
-          'With "When the browser restarts", there is no inactivity timeout. Your vault can stay unlocked even after you close the popup or window. The browser keeps the key needed to open it in temporary memory, not your master password. Choose a timed option on a shared computer, and press Lock when you are finished.',
+          t(
+            'With "When the browser restarts", there is no inactivity timeout. Your vault can stay unlocked even after you close the popup or window. The browser keeps the key needed to open it in temporary memory, not your master password. Choose a timed option on a shared computer, and press Lock when you are finished.',
+          ),
         ),
         ctx.isPopup
-          ? button("Open in a window", () => run(openVault), "button text")
+          ? button(t("Open in a window"), () => run(openVault), "button text")
           : null,
         button(
-          "Change master password",
+          t("Change master password"),
           () => run(async () => changePassword()),
           "button tonal",
         ),
@@ -77,7 +93,7 @@ export function createSettings(ctx: AppContext) {
       el(
         "div",
         { class: "settings-section stack" },
-        el("h2", {}, "Keyboard shortcut"),
+        el("h2", {}, t("Keyboard shortcut")),
         el(
           "p",
           {},
@@ -88,7 +104,7 @@ export function createSettings(ctx: AppContext) {
 
         isExtension
           ? button(
-              "Change shortcut",
+              t("Change shortcut"),
               () => {
                 void chrome.tabs.create({
                   url: shortcutSettingsURL(
@@ -105,7 +121,9 @@ export function createSettings(ctx: AppContext) {
           ? el(
               "p",
               { class: "hint" },
-              "Firefox on Linux uses Ctrl+Shift+7. In the add-ons manager, open the gear menu and choose Manage Extension Shortcuts.",
+              t(
+                "Firefox on Linux uses Ctrl+Shift+7. In the add-ons manager, open the gear menu and choose Manage Extension Shortcuts.",
+              ),
             )
           : null,
       ),
@@ -120,19 +138,21 @@ export function createSettings(ctx: AppContext) {
         el(
           "p",
           {},
-          "Your device clock must be correct. Keep an independent backup; there is no password reset.",
+          t(
+            "Your device clock must be correct. Keep an independent backup; there is no password reset.",
+          ),
         ),
       ),
     );
   }
 
   function changePassword(): void {
-    const current = input("current", "Current master password", "password"),
-      next = input("next", "New master password", "password"),
-      confirm = input("confirm", "Confirm new master password", "password");
+    const current = input("current", t("Current master password"), "password"),
+      next = input("next", t("New master password"), "password"),
+      confirm = input("confirm", t("Confirm new master password"), "password");
     next.control.autocomplete = confirm.control.autocomplete = "new-password";
     modal(
-      "Change master password",
+      t("Change master password"),
       form(
         async (_fields, f) =>
           run(async () => {
@@ -141,7 +161,7 @@ export function createSettings(ctx: AppContext) {
             try {
               if (next.control.value !== confirm.control.value)
                 throw new Error("Passwords do not match.");
-              announce(busyCopy.setup);
+              announce(t(busyCopy.setup));
               const rotation = await rotatePassword(
                 session.current(),
                 current.control.value,
@@ -166,14 +186,16 @@ export function createSettings(ctx: AppContext) {
             closeDialog();
             render();
             announce(
-              "Master password changed and vault key rotated. Existing backup files still use their original passphrase.",
+              t(
+                "Master password changed and vault key rotated. Existing backup files still use their original passphrase.",
+              ),
             );
           }),
         current.wrapper,
 
         withGenerator(next),
         confirm.wrapper,
-        submit("Change password"),
+        submit(t("Change password")),
       ),
     );
   }

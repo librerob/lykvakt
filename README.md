@@ -4,6 +4,11 @@ I built Lykvakt because I wanted a small authenticator I could use every day wit
 
 Lykvakt runs in **Chrome, Microsoft Edge and Firefox on desktop**. All three builds come from this repository and use the same encrypted backup format. Each browser keeps its own vault; use an encrypted backup to move your accounts between them.
 
+[![Get Lykvakt on the Chrome Web Store](docs/assets/chrome-store.svg)](https://chromewebstore.google.com/detail/lykvakt/mkdpeckmkminhpoehedicocglpdiicon)
+[![Get Lykvakt on Firefox Add-ons](docs/assets/firefox-addons.svg)](https://addons.mozilla.org/en-US/firefox/addon/lykvakt/)
+
+For Edge, use the Chrome Web Store link and allow extensions from other stores when Edge asks. The separate Edge build is also available in the [GitHub releases](https://github.com/librerob/lykvakt/releases).
+
 The name is coined and Nordic-inspired, with the idea of watching over your keys.
 
 ![Authenticator popup with synthetic accounts](docs/screenshots/popup-mode.png)
@@ -44,9 +49,13 @@ Click an account row to copy its current code. Codes stay hidden until you revea
 
 Ctrl+Shift+Y opens the popup, or Command+Shift+Y on Mac. Edge uses Ctrl+Shift+7 (Command+Shift+7 on Mac), and Firefox on Linux uses Ctrl+Shift+7, to avoid browser shortcuts. To change the shortcut, choose **Change shortcut** in Settings. This opens your browser's shortcut manager. To copy with Enter, type part of an account name into search first; the confirmation tells you which account was copied.
 
+Can’t find a text setup key? [Use a copied or cropped QR image](docs/usage.md#if-you-cannot-find-a-setup-key). The guide also explains clipboard history and screenshot copies.
+
 Choose **Open in a window** in Settings if you want to keep Lykvakt open alongside a website or select a file.
 
 Save an encrypted backup somewhere outside the browser, then choose **Verify or restore a backup** in **Backup** to test the file you saved. Creating a backup, exporting plaintext OTP links and revealing a transfer QR all ask for your master password again.
+
+Start with [the step-by-step backup and restore guide](docs/backups.md). It explains which password to use, how to check your saved file, and how to move to a new browser without replacing an existing vault.
 
 Imports recognise supported formats and show any skipped entries before you save. The [design and recovery guide](docs/design.md) explains the formats, migration steps and compatibility limits. Steam support covers sign-in codes; it doesn't handle trade or market confirmations.
 
@@ -55,6 +64,8 @@ You can close the popup, copy something from a website and reopen Lykvakt withou
 **When the browser restarts** has no inactivity timeout. Closing the popup or window does not end that session; press **Lock** when you are finished. A timed option is a better choice on a shared computer.
 
 Import, export and backups are together in **Backup**. You can paste a copied QR image or drop an image file into Import accounts in either the popup or the window. File pickers use the separate window.
+
+Choose your language in Settings or Help & documentation. The [translation guide](docs/translations.md) lists the 21 languages and the English fallback for longer help.
 
 You choose your password length; I recommend a long, unique passphrase. **Help & documentation** works offline, and the [full usage guide](docs/usage.md) has more detail.
 

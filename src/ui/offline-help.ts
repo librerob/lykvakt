@@ -1,38 +1,51 @@
+import { languageChoice } from "./language";
+import { t } from "../i18n";
 import { documentationLink, el } from "../dom";
 export function offlineHelp(isPopup: boolean): HTMLElement {
   return el(
     "div",
     { class: "stack offline-help" },
+    languageChoice(),
     el(
       "p",
       {},
-      "These tips work offline. The full guide on GitHub is optional.",
+      t("These tips work offline. The full guide on GitHub is optional."),
     ),
-    el("h3", {}, "Opening and locking"),
+    el("h3", {}, t("Opening and locking")),
     el(
       "p",
       {},
       isPopup
-        ? "You can close this popup and reopen it without entering your password again until the session expires. The default is 5 minutes of inactivity. Lock ends the session in every view."
-        : "This window shares the timed unlock session with the popup. Settings lets you change the timer; Lock ends the session in every view.",
+        ? t(
+            "You can close this popup and reopen it without entering your password again until the session expires. The default is 5 minutes of inactivity. Lock ends the session in every view.",
+          )
+        : t(
+            "This window shares the timed unlock session with the popup. Settings lets you change the timer; Lock ends the session in every view.",
+          ),
     ),
-    el("h3", {}, "Your codes"),
+    el("h3", {}, t("Your codes")),
     el(
       "p",
       {},
-      "Click an account row to copy its current code. Reveal shows it for 30 seconds. Type part of an account name and press Enter to copy the first match. Counter-based codes advance only after you confirm More → Advance counter.",
+      t(
+        "Click an account row to copy its current code. Reveal shows it for 30 seconds. Type part of an account name and press Enter to copy the first match. Counter-based codes advance only after you confirm More → Advance counter.",
+      ),
     ),
-    el("h3", {}, "Import and backup"),
+    el("h3", {}, t("Import and backup")),
     el(
       "p",
       {},
-      "Backup contains Import accounts, export and encrypted backups. Paste setup links, export text or copied QR images into Import accounts, or drop an image file. Review the details, then choose Add account. File pickers still use Open in a window to choose a file; the window shares your unlock session.",
+      t(
+        "Backup contains Import accounts, export and encrypted backups. Paste setup links, export text or copied QR images into Import accounts, or drop an image file. Review the details, then choose Add account. File pickers still use Open in a window to choose a file; the window shares your unlock session.",
+      ),
     ),
-    el("h3", {}, "Keep a way back in"),
+    el("h3", {}, t("Keep a way back in")),
     el(
       "p",
       {},
-      "There is no password reset. Keep your password and a separate encrypted backup somewhere safe. Test the saved backup in Backup → Verify or restore a backup. Plaintext exports and transfer QR images contain setup secrets; keep them private.",
+      t(
+        "There is no password reset. Keep your password and a separate encrypted backup somewhere safe. Test the saved backup in Backup → Verify or restore a backup. Plaintext exports and transfer QR images contain setup secrets; keep them private.",
+      ),
     ),
     documentationLink(),
   );

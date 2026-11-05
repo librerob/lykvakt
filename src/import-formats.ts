@@ -304,6 +304,10 @@ export function parseMaFile(value: unknown): ImportResult {
   const e = record(value),
     bytes = unbase64(e.shared_secret, 640);
   try {
+    if (bytes.length < 10)
+      throw new Error(
+        "Steam export shared secret must contain at least 10 bytes.",
+      );
     return {
       accounts: [
         account({

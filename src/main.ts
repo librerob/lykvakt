@@ -1,3 +1,4 @@
+import { t, initializeLanguage } from "./i18n";
 import { BrowserSession } from "./browser-session";
 import { DialogLifetime } from "./dialog";
 import { dialogOperation } from "./ui/context";
@@ -17,6 +18,7 @@ import { createRecovery } from "./ui/recovery";
 import { createSettings } from "./ui/settings";
 import { createWelcome } from "./ui/welcome";
 import type { AppContext, AppState } from "./ui/context";
+await initializeLanguage();
 const root = document.querySelector<HTMLDivElement>("#app")!;
 const isExtension = !!globalThis.chrome?.runtime?.id;
 const session = new Session(isExtension ? new BrowserSession() : undefined);
@@ -62,7 +64,7 @@ function announce(message: string, error = false, technical?: string): void {
   const liveStatus =
     dialog?.querySelector<HTMLElement>(".dialog-status") ?? status;
   liveStatus.replaceChildren(
-    el("p", {}, message),
+    el("p", {}, t(message)),
     ...(technical ? [technicalDetails(el("p", {}, technical))] : []),
   );
   liveStatus.className =
@@ -92,7 +94,7 @@ function modal(title: string, content: Node): void {
       "div",
       { class: "dialog-head" },
       titleNode,
-      button("Close", closeDialog, "button text"),
+      button(t("Close"), closeDialog, "button text"),
     ),
     content,
     el("div", {
@@ -243,6 +245,12 @@ setInterval(() => {
   }
 }, 1000);
 
+window.addEventListener("lykvakt-language", () => {
+  closeDialog();
+  accounts.clear();
+  render();
+});
+
 function render(): void {
   root.setAttribute("aria-busy", String(loading));
   const title = el(
@@ -252,14 +260,14 @@ function render(): void {
     el("div", {}, el("strong", {}, "Lykvakt")),
   );
   const help = button(
-    "Help & documentation",
-    () => modal("Help & documentation", offlineHelp(isPopup)),
+    t("Help & documentation"),
+    () => modal(t("Help & documentation"), offlineHelp(isPopup)),
     "button text help-link",
   );
   help.disabled = loading;
   const tools = el("div", { class: "header-actions" }, help);
   if (session.unlocked)
-    tools.append(button("Lock", () => session.lock(), "button tonal"));
+    tools.append(button(t("Lock"), () => session.lock(), "button tonal"));
   const header = el("header", {}, title, tools);
   status = el("div", {
     class: "status",
@@ -269,15 +277,15 @@ function render(): void {
   const main = el("main");
   if (loading)
     main.append(
-      el("p", { class: "content", role: "status" }, "Opening your vault…"),
+      el("p", { class: "content", role: "status" }, t("Opening your vault…")),
     );
   else if (!session.unlocked) main.append(welcome.locked());
   else {
-    const nav = el("nav", { "aria-label": "Vault" });
+    const nav = el("nav", { "aria-label": t("Vault") });
     for (const [key, title] of [
-      ["codes", "Authenticator"],
-      ["backups", "Backup"],
-      ["settings", "Settings"],
+      ["codes", t("Authenticator")],
+      ["backups", t("Backup")],
+      ["settings", t("Settings")],
     ] as const) {
       const tab = button(
         title,
@@ -312,7 +320,7 @@ function render(): void {
         "span",
         { class: "local-footer" },
         el("span", { class: "local-dot" }),
-        "Local vault · No account · No telemetry",
+        t("Local vault · No account · No telemetry"),
       ),
     ),
   );

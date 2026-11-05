@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 import { VaultCreatedError } from "../session";
 import { busyCopy } from "../help";
 import { OldFormatError, oldFormatMessage } from "../format";
@@ -20,17 +21,19 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
     return el(
       "section",
       { class: "welcome stack" },
-      el("h1", {}, "Earlier preview"),
-      el("p", {}, oldFormatMessage),
+      el("h1", {}, t("Earlier preview")),
+      el("p", {}, t(oldFormatMessage)),
 
       button(
-        "Erase the old vault and start fresh",
+        t("Erase the old vault and start fresh"),
         () => {
           const expected = state.oldVault!;
           ctx.confirmAction(
-            "Erase the old vault?",
-            "This permanently removes the old local vault and its local recovery copy. Export your accounts using the old app first. No file outside this browser is erased.",
-            "Erase old vault",
+            t("Erase the old vault?"),
+            t(
+              "This permanently removes the old local vault and its local recovery copy. Export your accounts using the old app first. No file outside this browser is erased.",
+            ),
+            t("Erase old vault"),
             async (signal) => {
               await eraseOldVault(expected, signal);
               session.lock();
@@ -50,7 +53,7 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
     if (state.oldVault) return oldVault();
     const password = input(
       "password",
-      state.exists ? "Master password" : "Create a master password",
+      state.exists ? t("Master password") : t("Create a master password"),
       "password",
     );
     password.control.required = true;
@@ -61,7 +64,7 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
     password.control.maxLength = 1024;
     const confirmation = input(
       "confirmation",
-      "Confirm master password",
+      t("Confirm master password"),
       "password",
     );
     confirmation.control.autocomplete = "new-password";
@@ -73,7 +76,7 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
           if (!state.exists && value !== data.get("confirmation"))
             throw new Error("Passwords do not match.");
           try {
-            ctx.announce(state.exists ? busyCopy.unlock : busyCopy.setup);
+            ctx.announce(state.exists ? t(busyCopy.unlock) : t(busyCopy.setup));
             if (state.exists) await session.unlock(value, state.recovery);
             else {
               await session.setup(value);
@@ -142,10 +145,10 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
       state.exists ? null : confirmation.wrapper,
       submit(
         state.recovery
-          ? "Unlock older copy"
+          ? t("Unlock older copy")
           : state.exists
-            ? "Unlock vault"
-            : "Create encrypted vault",
+            ? t("Unlock vault")
+            : t("Create encrypted vault"),
       ),
     );
     return el(
@@ -156,12 +159,20 @@ export function createWelcome(ctx: AppContext, recoverySetup: () => void) {
         { class: "brand-mark", "aria-hidden": "true" },
         el("img", { src: "icons/128.png", width: "64", height: "64", alt: "" }),
       ),
-      el("p", { class: "eyebrow" }, "SECURITY WITHOUT THE CLUTTER"),
-      el("h1", {}, state.exists ? "Welcome back." : "Your codes. Your vault."),
+      el("p", { class: "eyebrow" }, t("SECURITY WITHOUT THE CLUTTER")),
+      el(
+        "h1",
+        {},
+        state.exists ? t("Welcome back.") : t("Your codes. Your vault."),
+      ),
       signIn,
       state.exists
         ? null
-        : button("Restore an encrypted backup", recoverySetup, "button text"),
+        : button(
+            t("Restore an encrypted backup"),
+            recoverySetup,
+            "button text",
+          ),
     );
   }
   return { locked };

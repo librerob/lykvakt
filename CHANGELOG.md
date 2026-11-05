@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Add Chrome and Firefox install links and a step-by-step backup and restore guide.
+- Offer 21 local language choices, including Romanian and the Nordic languages, with English fallback for longer help.
+- Add manually entered accounts in one step; keep bulk-import review and duplicate checks.
+- Accept valid short standard OTP keys with a warning, preserving Steam export validation and malformed-input limits.
+- Explain QR-only setup, clipboard history and screenshot copies without adding capture or clipboard-read permissions.
+- Check that a password unlock derives its key once and reopening a valid session does not repeat it.
+
 ## 0.5.9 — 5 November 2026
 
 - Give account cards a clearer hierarchy: account details above, the current code and countdown together, and a smaller, aligned Next code preview.

@@ -159,7 +159,7 @@ it("locking during an image read prevents a late preview", async () => {
   expect(save).not.toHaveBeenCalled();
 });
 
-it("manual-account wording names the review step and uses a familiar account label", () => {
+it("manual-account wording names the single add action and uses a familiar account label", () => {
   const { ctx } = setup();
   ctx.isExtension = false;
   createEnrollment(ctx, () => {}).addAccount();
@@ -168,7 +168,7 @@ it("manual-account wording names the review step and uses a familiar account lab
   expect(
     node
       .querySelectorAll("button")
-      .some((b) => b.textContent === "Review account"),
+      .some((b) => b.textContent === "Add account"),
   ).toBe(true);
   expect(node.textContent).toContain("Import a link or QR image");
   expect(node.textContent).not.toContain("Preview account");
