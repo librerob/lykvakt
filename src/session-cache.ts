@@ -41,11 +41,7 @@ export function validateDraft(value: unknown): EnrollmentDraft {
     d.mode === "import" &&
     !(d.fields.payload ?? "").split(/[\r\n]/).every((line) => {
       const text = line.trim();
-      return (
-        !text ||
-        text.startsWith("otpauth:") ||
-        text.startsWith("otpauth-migration:")
-      );
+      return !text || /^otpauth(?:-migration)?:/i.test(text);
     })
   )
     throw new Error("Only OTP setup links can be remembered.");

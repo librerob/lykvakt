@@ -87,7 +87,7 @@ If there is only a QR image:
 1. Copy the QR image, or take a tightly cropped screenshot of just the QR. On Windows, use Win+Shift+S. On Mac, Control+Shift+Command+4 copies a region to the clipboard. On Linux, use your screenshot tool's copy-region option.
 2. Open Lykvakt, choose **Add account → Import a link or QR image** or **Backup → Import accounts**, and focus **Setup links or export text**.
 3. Paste with Ctrl+V or Command+V. You can also drop an image file into that box. To choose a saved image, use the separate window.
-4. Review the account details and any skipped entries, then choose **Add account**. Check the codes before removing your old authenticator.
+4. Review the account details, any compatibility notes and any skipped entries, then choose **Add account**. Check the codes before removing your old authenticator.
 
 Lykvakt reads the image on your device. It does not capture the page, fetch a dropped image URL or upload the image. Screenshot tools may also save a file, and clipboard history may keep the image. See the next section before sharing screenshots.
 

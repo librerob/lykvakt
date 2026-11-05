@@ -13,11 +13,14 @@ import {
   validateAccount,
   type Account,
 } from "./model";
-import { codeFor } from "./otp";
+import { codeFor, normalizeSecret, SetupKeyFormatError } from "./otp";
 import { decryptEnvelope, snapshot } from "./crypto";
 import type { VaultData } from "./model";
 
-export function parseURI(input: string): Account {
+export function parseURI(
+  input: string,
+  onWarning?: (message: string) => void,
+): Account {
   if (input.length > 5000 || /[\r\n\u0000]/.test(input))
     throw new Error("Invalid OTP URI.");
   let url: URL;
@@ -26,9 +29,12 @@ export function parseURI(input: string): Account {
   } catch {
     throw new Error("Invalid OTP URI.");
   }
+  const type = onWarning ? url.hostname.toLowerCase() : url.hostname;
+  if (onWarning && type !== url.hostname)
+    onWarning("Normalized setup-link type capitalization.");
   if (
     url.protocol !== "otpauth:" ||
-    !["totp", "hotp", "steam"].includes(url.hostname) ||
+    !["totp", "hotp", "steam"].includes(type) ||
     url.username ||
     url.password ||
     url.port ||
@@ -43,16 +49,30 @@ export function parseURI(input: string): Account {
     "period",
     "counter",
   ]);
-  for (const key of url.searchParams.keys())
-    if (!allowed.has(key) || url.searchParams.getAll(key).length !== 1)
+  let extra = false;
+  for (const key of url.searchParams.keys()) {
+    if (url.searchParams.getAll(key).length !== 1)
       throw new Error("Unknown or duplicate OTP parameter.");
+    if (!allowed.has(key)) {
+      if (!onWarning) throw new Error("Unknown or duplicate OTP parameter.");
+      extra = true;
+    }
+  }
+  if (extra)
+    onWarning?.(
+      "Ignored extra setup-link options. Check the account settings before adding.",
+    );
+  if (onWarning && type === "hotp" && url.searchParams.get("period") === "30") {
+    url.searchParams.delete("period");
+    onWarning("Ignored a standard time period on a counter-based setup link.");
+  }
   if (
-    (url.hostname === "hotp" && url.searchParams.has("period")) ||
-    (url.hostname !== "hotp" && url.searchParams.has("counter"))
+    (type === "hotp" && url.searchParams.has("period")) ||
+    (type !== "hotp" && url.searchParams.has("counter"))
   )
     throw new Error("Parameters conflict with OTP type.");
   if (
-    url.hostname === "steam" &&
+    type === "steam" &&
     (url.searchParams.get("digits") !== "5" ||
       url.searchParams.get("period") !== "30")
   )
@@ -63,12 +83,17 @@ export function parseURI(input: string): Account {
   const colon = label.indexOf(":");
   const prefix = colon < 0 ? "" : label.slice(0, colon).trim();
   const issuer = url.searchParams.get("issuer") ?? prefix;
-  if (prefix && issuer !== prefix)
-    throw new Error("Issuer in label conflicts with issuer parameter.");
+  if (prefix && issuer !== prefix) {
+    if (!onWarning)
+      throw new Error("Issuer in label conflicts with issuer parameter.");
+    onWarning(
+      "Service names in the setup link differ. The explicit service name was used; check it before adding.",
+    );
+  }
   // FreeOTP+ uses issuer Steam with five-character TOTP links.
   const steam =
-    url.hostname === "steam" ||
-    (url.hostname === "totp" &&
+    type === "steam" ||
+    (type === "totp" &&
       issuer === "Steam" &&
       url.searchParams.get("digits") === "5");
   const algorithm = url.searchParams.get("algorithm") ?? "SHA1";
@@ -87,14 +112,39 @@ export function parseURI(input: string): Account {
     !/^[1-9][0-9]{0,3}$/.test(period)
   )
     throw new Error("Unsupported digits or period.");
-  if (url.hostname === "hotp" && !url.searchParams.has("counter"))
+  if (type === "hotp" && !url.searchParams.has("counter"))
     throw new Error("HOTP requires an explicit counter.");
+  let secret = url.searchParams.get("secret");
+  if (onWarning && secret !== null) {
+    try {
+      secret = normalizeSecret(secret);
+    } catch (error) {
+      if (
+        !(error instanceof SetupKeyFormatError) ||
+        error.reason !== "trailing"
+      )
+        throw error;
+      const raw = secret
+        .replace(/[ \r\n\t-]/g, "")
+        .toUpperCase()
+        .replace(/=+$/, "");
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
+        bits = (raw.length * 5) % 8;
+      const last = alphabet.indexOf(raw.at(-1)!);
+      secret = normalizeSecret(
+        raw.slice(0, -1) + alphabet[last & ~((1 << bits) - 1)]!,
+      );
+      onWarning(
+        "Normalized unused Base32 bits. The decoded setup-key bytes are unchanged.",
+      );
+    }
+  }
   return validateAccount({
     id: crypto.randomUUID(),
     issuer,
     label: colon < 0 ? label : label.slice(colon + 1).trim(),
-    secret: url.searchParams.get("secret"),
-    type: steam ? "steam" : url.hostname,
+    secret,
+    type: steam ? "steam" : type,
     algorithm: algorithms[algorithm.toUpperCase()],
     digits: Number(digits),
     period: Number(period),
@@ -209,6 +259,7 @@ export function previewImport(
 export function parseImport(
   input: string,
   format: "uri" | "aegis" | "2fas",
+  compatibility = false,
 ): ImportResult {
   if (new TextEncoder().encode(input).length > MAX_FILE_BYTES)
     throw new Error("Import is too large.");
@@ -221,23 +272,40 @@ export function parseImport(
     if (!lines.length || lines.length > MAX_ACCOUNTS)
       throw new Error("Supply 1–2000 OTP URIs.");
     const migrations = lines.filter((line) =>
-      line.startsWith("otpauth-migration:"),
+      /^otpauth-migration:/i.test(line),
     );
     if (migrations.length) {
       if (migrations.length !== lines.length)
         throw new Error(
           "Import Google transfers separately from standard OTP links.",
         );
-      return parseMigrationImport(migrations);
+      return parseMigrationImport(
+        migrations.map((line) =>
+          line.replace(/^otpauth-migration:/i, "otpauth-migration:"),
+        ),
+      );
     }
-    return requireAccounts(
+    const warnings: import("./import-result").SkippedEntry[] = [];
+    const result = requireAccounts(
       collectImport(
-        lines,
-        parseURI,
+        entries,
+        (entry) => {
+          const notes: string[] = [];
+          const account = parseURI(
+            entry.value,
+            compatibility ? (message) => notes.push(message) : undefined,
+          );
+          warnings.push(
+            ...notes.map((reason) => ({ index: entry.index, reason })),
+          );
+          return account;
+        },
         "Invalid or unsupported OTP URI.",
-        entries.map((line) => line.index),
+        entries.map((entry) => entry.index),
       ),
     );
+    if (warnings.length) result.warnings = warnings;
+    return result;
   }
 
   const parsed = record(JSON.parse(input));

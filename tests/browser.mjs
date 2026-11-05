@@ -3902,7 +3902,7 @@ try {
         ).toBeVisible();
         const before = await storedVault();
         const png = await QRCode.toBuffer(
-          "otpauth://totp/QR%20formats:synthetic?secret=JBSWY3DPEHPK3PXP&issuer=QR%20formats",
+          "otpauth://TOTP/Old:synthetic?secret=MZ&issuer=QR%20formats&image=https%3A%2F%2Fexample.test%2FPRIVATE_METADATA",
           { width: 360, errorCorrectionLevel: "M" },
         );
         for (const mime of ["image/png", "image/jpeg", "image/webp"]) {
@@ -3944,6 +3944,12 @@ try {
             });
           await expect(page.getByRole("dialog")).toContainText("1 new account");
           await expect(page.getByRole("dialog")).toContainText("QR formats");
+          await expect(page.locator(".import-warnings")).toContainText(
+            "unused Base32 bits",
+          );
+          await expect(page.getByRole("dialog")).not.toContainText(
+            "PRIVATE_METADATA",
+          );
           expect(await storedVault()).toEqual(before);
           await closeImport();
         }

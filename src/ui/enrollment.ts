@@ -194,6 +194,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
     skipped: SkippedEntry[] = [],
     source?: string,
     signal?: AbortSignal,
+    warnings: SkippedEntry[] = [],
   ): Promise<void> {
     session.check();
     signal?.throwIfAborted();
@@ -249,6 +250,24 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             "Compare codes with your existing authenticator before removing it. A preview does not verify acceptance by the service.",
           ),
         ),
+        warnings.length
+          ? el(
+              "div",
+              { class: "import-warnings", lang: "en", role: "note" },
+              el(
+                "p",
+                {},
+                "Some setup-link details were normalized. Review these notes before adding accounts.",
+              ),
+              el(
+                "ul",
+                {},
+                ...warnings.map((entry) =>
+                  el("li", {}, "Account " + entry.index + ": " + entry.reason),
+                ),
+              ),
+            )
+          : null,
         skipped.length
           ? el(
               "ul",
@@ -352,9 +371,15 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           }
           session.check();
           if (epoch !== session.epoch()) return;
-          const imported = parseImport(values.join("\n"), "uri");
+          const imported = parseImport(values.join("\n"), "uri", true);
           signal.throwIfAborted();
-          await preview(imported.accounts, imported.skipped, undefined, signal);
+          await preview(
+            imported.accounts,
+            imported.skipped,
+            undefined,
+            signal,
+            imported.warnings,
+          );
         } finally {
           reading = false;
           area.disabled = false;
@@ -445,6 +470,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                 detected,
                 sourcePassword.control.value,
                 signal,
+                true,
               );
               session.check();
               if (epoch !== session.epoch()) return;
@@ -456,6 +482,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                 imported.skipped,
                 imported.name,
                 signal,
+                imported.warnings,
               );
             } finally {
               sourcePassword.control.value = "";

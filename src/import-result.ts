@@ -7,6 +7,7 @@ export interface SkippedEntry {
 export interface ImportResult {
   accounts: Account[];
   skipped: SkippedEntry[];
+  warnings?: SkippedEntry[];
 }
 export class NoValidAccountsError extends Error {
   constructor(readonly skipped: SkippedEntry[]) {

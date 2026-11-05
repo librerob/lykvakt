@@ -153,3 +153,30 @@ it("explains text-only paste without reading, echoing or importing clipboard tex
   expect(decode).not.toHaveBeenCalled();
   expect(save).not.toHaveBeenCalled();
 });
+
+it("shows compatibility notes from QR payloads before any account is saved", async () => {
+  const { tools, save, errors } = setup();
+  decode.mockResolvedValue([
+    "otpauth://TOTP/Old:synthetic?secret=MZ&issuer=Explicit&extra=PRIVATE_METADATA",
+  ]);
+  tools.importAccounts(true);
+  (ui.dialog as unknown as TestElement)
+    .querySelector("textarea")!
+    .dispatchEvent(
+      imageEvent(
+        "paste",
+        new File(["synthetic"], "qr.png", { type: "image/png" }),
+      ),
+    );
+  await vi.waitFor(() =>
+    expect(
+      (ui.dialog as unknown as TestElement).querySelector(".import-warnings"),
+    ).not.toBeNull(),
+  );
+  const view = ui.dialog as unknown as TestElement;
+  expect(view.textContent).toContain("unused Base32 bits");
+  expect(view.textContent).toContain("Explicit");
+  expect(view.textContent).not.toContain("PRIVATE_METADATA");
+  expect(save).not.toHaveBeenCalled();
+  expect(errors).toEqual([]);
+});
