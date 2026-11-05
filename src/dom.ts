@@ -56,8 +56,9 @@ export function select(
   label: string,
   options: Record<string, string>,
   selected: string,
+  labelId = `label-${name}`,
 ): { wrapper: HTMLLabelElement; control: HTMLSelectElement } {
-  const control = el("select", { name, "aria-labelledby": `label-${name}` });
+  const control = el("select", { name, "aria-labelledby": labelId });
   for (const [value, title] of Object.entries(options))
     control.append(el("option", { value }, title));
   control.value = selected;
@@ -65,7 +66,7 @@ export function select(
     wrapper: el(
       "label",
       { class: "field" },
-      el("span", { id: `label-${name}` }, label),
+      el("span", { id: labelId }, label),
       control,
     ),
     control,

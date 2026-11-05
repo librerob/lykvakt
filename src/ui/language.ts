@@ -6,8 +6,15 @@ import {
   t,
   type Language,
 } from "../i18n";
+let labelSequence = 0;
 export function languageChoice(): HTMLElement {
-  const field = select("language", t("Language"), LANGUAGES, currentLanguage());
+  const field = select(
+    "language",
+    t("Language"),
+    LANGUAGES,
+    currentLanguage(),
+    `label-language-${++labelSequence}`,
+  );
   field.control.dir = "ltr";
   field.control.addEventListener("change", () => {
     const chosen = field.control.value as Language;

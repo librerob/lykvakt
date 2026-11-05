@@ -3833,6 +3833,27 @@ try {
           ).toBe(true);
           await helpAxe("language-accounts-" + code);
         }
+        await page.locator("nav .nav-item").nth(2).click();
+        await page.locator(".help-link").click();
+        await expect(page.locator("dialog select[name=language]")).toHaveCount(
+          1,
+        );
+        expect(
+          await page
+            .locator("select[name=language]")
+            .evaluateAll((controls) => {
+              const ids = controls.map((control) =>
+                control.getAttribute("aria-labelledby"),
+              );
+              return (
+                ids.every(
+                  (id) =>
+                    id && document.querySelectorAll("#" + id).length === 1,
+                ) && new Set(ids).size === ids.length
+              );
+            }),
+        ).toBe(true);
+        await helpAxe("language-settings-help");
         expect(requests).toEqual([]);
       }),
   );

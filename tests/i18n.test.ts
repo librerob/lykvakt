@@ -1,3 +1,4 @@
+import { languageChoice } from "../src/ui/language";
 import { el } from "../src/dom";
 import { testDocument, type TestElement } from "./helpers/dom";
 import { isEnglishFallback } from "../src/i18n";
@@ -111,4 +112,21 @@ it("marks untranslated English guidance for screen readers without changing acco
   expect(node.getAttribute("lang")).toBe("en");
   const name = el("p", {}, "Close");
   expect(name.textContent).toBe("Close");
+});
+
+it("gives each language selector its own accessible label", () => {
+  vi.stubGlobal("document", testDocument);
+  const choices = [
+    languageChoice(),
+    languageChoice(),
+  ] as unknown as TestElement[];
+  const ids = choices.map((choice) => {
+    const label = choice.querySelector("span")!;
+    const control = choice.querySelector("select")!;
+    expect(control.getAttribute("aria-labelledby")).toBe(
+      label.getAttribute("id"),
+    );
+    return label.getAttribute("id");
+  });
+  expect(new Set(ids).size).toBe(2);
 });
