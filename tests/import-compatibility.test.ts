@@ -94,3 +94,15 @@ it("can keep uppercase setup links as bounded session drafts", async () => {
   };
   expect(validateDraft(draft)).toEqual(draft);
 });
+
+it("reviews many extra options once and still rejects a duplicate at the end", () => {
+  const options = Array.from({ length: 700 }, (_, i) => "x" + i + "=1").join(
+    "&",
+  );
+  const uri = "otpauth://totp/Demo?secret=" + secret + "&" + options;
+  expect(uri.length).toBeLessThan(5000);
+  const result = read(uri);
+  expect(result.accounts[0]!.secret).toBe(secret);
+  expect(result.warnings).toHaveLength(1);
+  expect(() => read(uri + "&x699=2")).toThrow("No valid accounts");
+});

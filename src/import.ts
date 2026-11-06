@@ -50,9 +50,10 @@ export function parseURI(
     "counter",
   ]);
   let extra = false;
+  const seen = new Set<string>();
   for (const key of url.searchParams.keys()) {
-    if (url.searchParams.getAll(key).length !== 1)
-      throw new Error("Unknown or duplicate OTP parameter.");
+    if (seen.has(key)) throw new Error("Unknown or duplicate OTP parameter.");
+    seen.add(key);
     if (!allowed.has(key)) {
       if (!onWarning) throw new Error("Unknown or duplicate OTP parameter.");
       extra = true;
