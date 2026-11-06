@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.1 — 6 November 2026
 
 - Check declared QR-image dimensions before browser decoding; keep the worker timeout and decoded-size check.
 - Reject stale session activity and drafts, and avoid repeated reloads after a startup storage failure.
