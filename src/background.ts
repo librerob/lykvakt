@@ -58,6 +58,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       .catch(() => chrome.runtime.reload());
 });
 // Recreate a lost alarm after worker restart; this never extends the deadline.
-void broker
-  .request({ action: "expire" }, "worker")
-  .catch(() => chrome.runtime.reload());
+void broker.request({ action: "expire" }, "worker").catch(() => {
+  // Requests stay locked during a storage outage; startup must not reload recursively.
+});

@@ -871,3 +871,10 @@ html:not([lang="en"]) .search-row > .button {
   min-width: 0;
   white-space: normal;
 }
+
+.qr-import-entry {
+  gap: var(--s1);
+}
+.qr-drop-target {
+  min-height: 96px;
+}

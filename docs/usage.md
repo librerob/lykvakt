@@ -72,6 +72,8 @@ The vault and code generation work offline. Essential help is bundled in the app
 
 ## Paste a QR image
 
+For an image-first screen, choose **Backup → Import accounts → Import QR image**. Choose an image in window mode, or paste/drop it into **Paste or drop a QR image**. PNG, JPEG and WebP are supported. Review the decoded accounts before adding them.
+
 Copy the QR image or a cropped screenshot, open **Backup → Import accounts**, focus **Setup links or export text** and paste with Ctrl+V (Command+V on Mac). Review the accounts, then choose **Add account** or **Add N accounts**. Image-file drops use the same review. A dropped website image may supply only a URL; Lykvakt explains this and never downloads it.
 
 On Windows, Win+Shift+S opens Snipping Tool; select the QR and copy the image if needed. On Mac, Control+Shift+Command+4 copies a selected region. Screenshot tools may save files automatically, and clipboard history may retain images containing setup secrets. Check those settings if you want to avoid extra copies. See [Microsoft’s screenshot guide](https://support.microsoft.com/en-us/windows/apps/use-snipping-tool-to-capture-screenshots) and [Apple’s guide](https://support.apple.com/en-gb/102646).
@@ -85,7 +87,7 @@ If there is only a QR image:
 1. Copy the QR image, or take a tightly cropped screenshot of just the QR. On Windows, use Win+Shift+S. On Mac, Control+Shift+Command+4 copies a region to the clipboard. On Linux, use your screenshot tool's copy-region option.
 2. Open Lykvakt, choose **Add account → Import a link or QR image** or **Backup → Import accounts**, and focus **Setup links or export text**.
 3. Paste with Ctrl+V or Command+V. You can also drop an image file into that box. To choose a saved image, use the separate window.
-4. Review the account details and any skipped entries, then choose **Add account**. Check the codes before removing your old authenticator.
+4. Review the account details, any compatibility notes and any skipped entries, then choose **Add account**. Check the codes before removing your old authenticator.
 
 Lykvakt reads the image on your device. It does not capture the page, fetch a dropped image URL or upload the image. Screenshot tools may also save a file, and clipboard history may keep the image. See the next section before sharing screenshots.
 
@@ -111,3 +113,9 @@ A password unlock deliberately runs Argon2id locally with 64 MiB, three passes a
 An unexpired unlock session reopens without running the password derivation again. Keep the default five-minute inactivity timer, or choose a longer timed option in Settings if that fits your device use. **Lock** still ends the session in every view. The browser-restart option disables inactivity locking and has a different security trade-off.
 
 Lykvakt does not silently lower password protection to speed up a device. A benchmark from a different browser or computer is not a guarantee for yours. Maintainers can use the synthetic Node benchmark and browser CI's unlock measurements without uploading a real vault or password.
+
+A backward system-clock correction ends an unlock session, even if the correction is small. Unlock again after checking your system clock; the app does not extend the old session to compensate.
+
+Translations are an initial, unreviewed pass. Some safety instructions and detailed import reports are still in English. Switch to English if a translation is unclear, and keep a verified backup before moving accounts.
+
+To remove the older encrypted copy retained in this browser, open **Backup → Recent copy → Remove recent recovery copy…** and confirm your master password. The current vault is kept. The next account change creates a new recent copy. This does not remove exported backups, system backups or browser-storage remnants. Keep a verified backup before removing this extra recovery option.

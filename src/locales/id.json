@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Akun ditambahkan. Buat dan verifikasi cadangan terenkripsi baru.",
   "That account is already in your vault. Nothing was added.": "Akun sudah ada di brankas. Tidak ada yang ditambahkan.",
   "Can't find the setup key?": "Tidak menemukan kunci penyiapan?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Riwayat papan klip dapat menyimpan kunci dan gambar QR. Hapus salinan tersimpan di pengelola papan klip."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Riwayat papan klip dapat menyimpan kunci dan gambar QR. Hapus salinan tersimpan di pengelola papan klip.",
+  "Import QR image": "Impor gambar QR",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Pilih, tempel, atau seret gambar — PNG, JPEG, atau WebP",
+  "Paste or drop a QR image": "Tempel atau seret gambar QR",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Tidak ada gambar yang ditempel. Salin gambar QR itu sendiri atau pilih berkas gambar."
 }

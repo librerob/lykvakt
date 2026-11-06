@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Cont adăugat. Creează și verifică o copie criptată nouă.",
   "That account is already in your vault. Nothing was added.": "Contul există deja în seif. Nu s-a adăugat nimic.",
   "Can't find the setup key?": "Nu găsești cheia de configurare?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Istoricul clipboardului poate păstra chei și imagini QR. Șterge copiile din aplicația pentru clipboard."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Istoricul clipboardului poate păstra chei și imagini QR. Șterge copiile din aplicația pentru clipboard.",
+  "Import QR image": "Importă o imagine QR",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Alege, lipește sau trage o imagine — PNG, JPEG sau WebP",
+  "Paste or drop a QR image": "Lipește sau trage o imagine QR",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Nu a fost lipită nicio imagine. Copiază imaginea QR propriu-zisă sau alege un fișier imagine."
 }

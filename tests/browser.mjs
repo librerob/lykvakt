@@ -3857,6 +3857,171 @@ try {
         expect(requests).toEqual([]);
       }),
   );
+  await check(
+    "QR-first import explains popup file handling and reviews PNG, JPEG and WebP before saving",
+    () =>
+      sharedProfile(async () => {
+        await page.setViewportSize({ width: 400, height: 580 });
+        await click("Import accounts");
+        await click("Import QR image");
+        await expect(page.getByRole("dialog")).toContainText(
+          "Choose image, paste, or drop — PNG, JPEG or WebP",
+        );
+        await expect(
+          page.getByLabel("Paste or drop a QR image", { exact: true }),
+        ).toHaveAttribute("readonly", "");
+        await expect(
+          page.getByRole("button", {
+            name: "Open in a window to choose a file",
+            exact: true,
+          }),
+        ).toBeVisible();
+        await expect(page.locator("dialog input[type=file]")).toHaveCount(0);
+        await page.evaluate(() =>
+          navigator.clipboard.writeText("SYNTHETIC_PRIVATE_IMAGE_URL"),
+        );
+        await page
+          .getByLabel("Paste or drop a QR image", { exact: true })
+          .focus();
+        await page.keyboard.press("Control+V");
+        await expect(page.getByRole("status")).toContainText(
+          "No image was pasted.",
+        );
+        await expect(page.getByRole("dialog")).not.toContainText(
+          "SYNTHETIC_PRIVATE_IMAGE_URL",
+        );
+        await expect(
+          page.getByLabel("Paste or drop a QR image", { exact: true }),
+        ).toHaveValue("");
+        await helpAxe("qr-first-popup");
+        await screenshot("qr-first-popup");
+        await closeImport();
+        await page.goto(base);
+        await expect(
+          page.getByRole("button", { name: "Lock", exact: true }),
+        ).toBeVisible();
+        const before = await storedVault();
+        const png = await QRCode.toBuffer(
+          "otpauth://TOTP/Old:synthetic?secret=MZ&issuer=QR%20formats&image=https%3A%2F%2Fexample.test%2FPRIVATE_METADATA",
+          { width: 360, errorCorrectionLevel: "M" },
+        );
+        for (const mime of ["image/png", "image/jpeg", "image/webp"]) {
+          const bytes = await page.evaluate(
+            async ({ base64, mime }) => {
+              const blob = new Blob(
+                [Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))],
+                { type: "image/png" },
+              );
+              const bitmap = await createImageBitmap(blob);
+              try {
+                const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+                canvas.getContext("2d").drawImage(bitmap, 0, 0);
+                const encoded = await canvas.convertToBlob({
+                  type: mime,
+                  quality: 0.85,
+                });
+                if (encoded.type !== mime)
+                  throw Error("Image encoder returned a different type");
+                return Array.from(new Uint8Array(await encoded.arrayBuffer()));
+              } finally {
+                bitmap.close();
+              }
+            },
+            { base64: png.toString("base64"), mime },
+          );
+          await click("Import accounts");
+          await click("Import QR image");
+          if (mime === "image/png") {
+            await helpAxe("qr-first-window");
+            await screenshot("qr-first-window");
+          }
+          await page
+            .getByLabel("Read a QR image locally", { exact: true })
+            .setInputFiles({
+              name: "synthetic." + mime.split("/")[1],
+              mimeType: mime,
+              buffer: Buffer.from(bytes),
+            });
+          await expect(page.getByRole("dialog")).toContainText("1 new account");
+          await expect(page.getByRole("dialog")).toContainText("QR formats");
+          await expect(page.locator(".import-warnings")).toContainText(
+            "unused Base32 bits",
+          );
+          await expect(page.getByRole("dialog")).not.toContainText(
+            "PRIVATE_METADATA",
+          );
+          expect(await storedVault()).toEqual(before);
+          await closeImport();
+        }
+      }),
+  );
+  await check(
+    "removing the recent recovery copy requires the password and preserves active",
+    () =>
+      sharedProfile(async () => {
+        const previous = () =>
+          page.evaluate(
+            () =>
+              new Promise((resolve, reject) => {
+                const r = indexedDB.open("otp-vault", 1);
+                r.onerror = () => reject(r.error);
+                r.onsuccess = () => {
+                  const db = r.result,
+                    tx = db.transaction("vault", "readonly"),
+                    get = tx.objectStore("vault").get("previous");
+                  tx.oncomplete = () => {
+                    resolve(get.result);
+                    db.close();
+                  };
+                  tx.onabort = () => {
+                    reject(tx.error);
+                    db.close();
+                  };
+                };
+              }),
+          );
+        await importURI(uri);
+        const active = await storedVault(),
+          older = await previous();
+        expect(older).toBeTruthy();
+        await click("Backup");
+        await click("Remove recent recovery copy…");
+        await expect(page.getByRole("dialog")).toContainText(
+          "The next account change creates a new recovery copy.",
+        );
+        await helpAxe("remove-recovery-copy");
+        await page
+          .getByLabel("Master password", { exact: true })
+          .fill("wrong synthetic password");
+        await click("Remove recent copy");
+        await expect(page.locator("dialog form")).toHaveAttribute(
+          "aria-busy",
+          "false",
+          { timeout: 60000 },
+        );
+        await expect(page.getByRole("dialog")).toBeVisible();
+        await expect(
+          page.getByLabel("Master password", { exact: true }),
+        ).toHaveValue("");
+        expect(await previous()).toEqual(older);
+        expect(await storedVault()).toEqual(active);
+        await page
+          .getByLabel("Master password", { exact: true })
+          .fill(password);
+        await click("Remove recent copy");
+        await expect(page.getByRole("dialog")).toHaveCount(0, {
+          timeout: 60000,
+        });
+        expect(await previous()).toBeUndefined();
+        expect(await storedVault()).toEqual(active);
+        await importURI(
+          uri
+            .replace("demo%40example.test", "second%40example.test")
+            .replace(secret, "JBSWY3DPEHPK3PXP"),
+        );
+        expect(await previous()).toEqual(active);
+      }),
+  );
   await check("no external requests during vault workflows", async () =>
     expect(network).toEqual([]),
   );

@@ -463,6 +463,69 @@ try {
     },
   );
   await check(
+    "QR-first screen accepts native PNG paste and JPEG/WebP drops in Firefox",
+    async () => {
+      const image = (await QRCode.toBuffer(uri, { width: 320 })).toString(
+        "base64",
+      );
+      const readSaved =
+        "()=>new Promise((resolve,reject)=>{const r=indexedDB.open('otp-vault',1);r.onerror=()=>reject(r.error);r.onsuccess=()=>{const db=r.result,tx=db.transaction('vault','readonly'),get=tx.objectStore('vault').get('active');tx.oncomplete=()=>{resolve(JSON.stringify(get.result));db.close();};tx.onabort=()=>{reject(tx.error);db.close();};};})";
+      const before = await evaluate("(" + readSaved + ")()");
+      for (const mime of ["image/png", "image/jpeg", "image/webp"]) {
+        await click("Import accounts");
+        await click("Import QR image");
+        await wait(
+          "Boolean(document.querySelector('.qr-import-view textarea'))",
+        );
+        assert.equal(
+          await evaluate(
+            "document.querySelector('.qr-import-view').textContent.includes('Choose image, paste, or drop — PNG, JPEG or WebP')",
+          ),
+          true,
+        );
+        assert.equal(
+          await evaluate(
+            "document.querySelector('textarea[name=payload]').readOnly",
+          ),
+          true,
+        );
+        if (mime === "image/png") {
+          await accessibility("qr-first");
+          await screenshot("qr-first");
+          await evaluate(
+            "(async()=>{const bytes=Uint8Array.from(atob(" +
+              JSON.stringify(image) +
+              "),c=>c.charCodeAt(0));await navigator.clipboard.write([new ClipboardItem({'image/png':new Blob([bytes],{type:'image/png'})})]);document.querySelector('textarea[name=payload]').focus();})()",
+          );
+          await system(
+            viewSelection() + "b.focus();w.goDoCommand('cmd_paste');",
+          );
+        } else {
+          await evaluate(
+            "(async()=>{const bitmap=await createImageBitmap(new Blob([Uint8Array.from(atob(" +
+              JSON.stringify(image) +
+              "),c=>c.charCodeAt(0))],{type:'image/png'}));try{const canvas=new OffscreenCanvas(bitmap.width,bitmap.height);canvas.getContext('2d').drawImage(bitmap,0,0);const mime=" +
+              JSON.stringify(mime) +
+              ";const blob=await canvas.convertToBlob({type:mime,quality:0.85});if(blob.type!==mime)throw Error('Unexpected image encoding');const d=new DataTransfer();d.items.add(new File([blob],'synthetic',{type:mime}));document.querySelector('textarea[name=payload]').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:d}));}finally{bitmap.close();}})()",
+          );
+        }
+        await wait(
+          "document.querySelector('dialog')?.textContent.includes('1 exact duplicate')",
+        );
+        assert.equal(
+          await evaluate(
+            "Boolean((await browser.storage.session.get('unlockSession')).unlockSession?.unlock?.draft)",
+          ),
+          false,
+        );
+        await click("Close");
+        assert.equal(await evaluate("(" + readSaved + ")()"), before);
+      }
+      await click("Authenticator");
+      await wait("document.querySelectorAll('.account').length === 1");
+    },
+  );
+  await check(
     "malformed import links never expose setup secrets in Firefox errors",
     async () => {
       const malformed =

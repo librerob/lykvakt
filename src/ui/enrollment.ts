@@ -194,6 +194,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
     skipped: SkippedEntry[] = [],
     source?: string,
     signal?: AbortSignal,
+    warnings: SkippedEntry[] = [],
   ): Promise<void> {
     session.check();
     signal?.throwIfAborted();
@@ -249,6 +250,29 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
             "Compare codes with your existing authenticator before removing it. A preview does not verify acceptance by the service.",
           ),
         ),
+        warnings.length
+          ? el(
+              "div",
+              {
+                class: "import-warnings",
+                lang: "en",
+                dir: "ltr",
+                role: "note",
+              },
+              el(
+                "p",
+                {},
+                "Some setup-link details were normalized. Review these notes before adding accounts.",
+              ),
+              el(
+                "ul",
+                {},
+                ...warnings.map((entry) =>
+                  el("li", {}, "Account " + entry.index + ": " + entry.reason),
+                ),
+              ),
+            )
+          : null,
         skipped.length
           ? el(
               "ul",
@@ -303,7 +327,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
       );
   }
 
-  function importAccounts(): void {
+  function importAccounts(qrOnly = false): void {
     const draftForm: typeof form = (...args) =>
       enrollmentDraft(ctx, form(...args), "import");
     const area = el("textarea", {
@@ -352,9 +376,15 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
           }
           session.check();
           if (epoch !== session.epoch()) return;
-          const imported = parseImport(values.join("\n"), "uri");
+          const imported = parseImport(values.join("\n"), "uri", true);
           signal.throwIfAborted();
-          await preview(imported.accounts, imported.skipped, undefined, signal);
+          await preview(
+            imported.accounts,
+            imported.skipped,
+            undefined,
+            signal,
+            imported.warnings,
+          );
         } finally {
           reading = false;
           area.disabled = false;
@@ -365,6 +395,55 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
     qr.control.addEventListener("change", () => {
       void readImages([...(qr.control.files ?? [])]);
     });
+    if (qrOnly) {
+      area.setAttribute("readonly", "");
+      area.removeAttribute("placeholder");
+      area.className = "qr-drop-target";
+      area.addEventListener("paste", (event) => {
+        if (!(event as ClipboardEvent).clipboardData?.files.length) {
+          event.preventDefault();
+          announce(
+            t(
+              "No image was pasted. Copy the QR image itself, or choose an image file.",
+            ),
+          );
+        }
+      });
+      modal(
+        t("Import QR image"),
+        el(
+          "div",
+          { class: "stack qr-import-view" },
+          el(
+            "p",
+            { class: "hint" },
+            t("Choose image, paste, or drop — PNG, JPEG or WebP"),
+          ),
+          el(
+            "label",
+            { class: "field" },
+            el("span", {}, t("Paste or drop a QR image")),
+            area,
+          ),
+          fileChoice(ctx, qr.wrapper),
+          el(
+            "p",
+            { class: "hint" },
+            t(
+              "You can also paste a copied QR image here or drop an image file. Images are read locally and are not saved as drafts. Clipboard history may keep copied images.",
+            ),
+          ),
+          setupHelp(),
+        ),
+      );
+      return;
+    }
+    const qrAction = button(
+      t("Import QR image"),
+      () => importAccounts(true),
+      "button tonal",
+      { "aria-describedby": "qr-import-formats" },
+    );
     modal(
       t("Import accounts"),
       draftForm(
@@ -396,6 +475,7 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                 detected,
                 sourcePassword.control.value,
                 signal,
+                true,
               );
               session.check();
               if (epoch !== session.epoch()) return;
@@ -407,11 +487,22 @@ export function createEnrollment(ctx: AppContext, drawAccounts: () => void) {
                 imported.skipped,
                 imported.name,
                 signal,
+                imported.warnings,
               );
             } finally {
               sourcePassword.control.value = "";
             }
           }),
+        el(
+          "div",
+          { class: "stack qr-import-entry" },
+          qrAction,
+          el(
+            "p",
+            { class: "hint", id: "qr-import-formats" },
+            t("Choose image, paste, or drop — PNG, JPEG or WebP"),
+          ),
+        ),
         el(
           "p",
           { class: "hint" },

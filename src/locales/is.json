@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Reikningi bætt við. Búðu til og staðfestu nýtt dulkóðað öryggisafrit.",
   "That account is already in your vault. Nothing was added.": "Reikningurinn er þegar í hirslunni. Engu var bætt við.",
   "Can't find the setup key?": "Finnurðu ekki uppsetningarlykilinn?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Klippiborðsferill getur geymt lykla og QR-myndir. Hreinsaðu vistaðar færslur í klippiborðsforritinu."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Klippiborðsferill getur geymt lykla og QR-myndir. Hreinsaðu vistaðar færslur í klippiborðsforritinu.",
+  "Import QR image": "Flytja inn QR-mynd",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Veldu mynd, límdu hana eða dragðu hana hingað — PNG, JPEG eða WebP",
+  "Paste or drop a QR image": "Límdu eða dragðu QR-mynd hingað",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Engin mynd var límd inn. Afritaðu sjálfa QR-myndina eða veldu myndskrá."
 }

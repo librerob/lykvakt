@@ -185,11 +185,7 @@ export class SessionBroker {
         await this.io.write({ ...state, source, unlock });
         return unlock;
       }
-      const u =
-        m.action === "touch" || m.action === "draft"
-          ? state.unlock
-          : await this.require(state, source, m.epoch);
-      if (!u) throw failed();
+      const u = await this.require(state, source, m.epoch);
       if (m.action === "draft") {
         const now = this.io.now();
         if (now < u.checkedAt || (u.expires > 0 && now >= u.expires))

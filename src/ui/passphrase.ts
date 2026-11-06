@@ -66,6 +66,11 @@ export function withGenerator(field: {
         "Choose your password length. We recommend a long, unique passphrase (14+ characters).",
       ),
     ),
+    el(
+      "p",
+      { class: "hint", lang: "en", dir: "ltr" },
+      "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.",
+    ),
     shown,
   );
 }

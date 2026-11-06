@@ -1,5 +1,6 @@
 import { decodeQRs } from "./qr-engine";
-import { checkQRFile, checkQRDimensions } from "./qr-policy";
+import { checkQRDimensions } from "./qr-policy";
+import { checkQRHeader } from "./qr-header";
 const scope = self as unknown as {
   onmessage: (event: MessageEvent<Blob>) => void;
   postMessage: (value: { values?: string[]; error?: string }) => void;
@@ -17,7 +18,7 @@ scope.onmessage = (event) => {
   );
 };
 async function read(file: Blob): Promise<string[]> {
-  checkQRFile(file);
+  await checkQRHeader(file);
   const bitmap = await createImageBitmap(file);
   let canvas: OffscreenCanvas | undefined;
   try {

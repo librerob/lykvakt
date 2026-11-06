@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "계정이 추가되었습니다. 새 암호화 백업을 만들고 확인하세요.",
   "That account is already in your vault. Nothing was added.": "이 계정은 이미 보관함에 있습니다. 추가하지 않았습니다.",
   "Can't find the setup key?": "설정 키를 찾을 수 없나요?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "클립보드 기록에 키와 QR 이미지가 남을 수 있습니다. 클립보드 관리자에서 저장된 사본을 지우세요."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "클립보드 기록에 키와 QR 이미지가 남을 수 있습니다. 클립보드 관리자에서 저장된 사본을 지우세요.",
+  "Import QR image": "QR 코드 이미지 가져오기",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "이미지 선택, 붙여넣기 또는 끌어놓기 — PNG, JPEG 또는 WebP",
+  "Paste or drop a QR image": "QR 코드 이미지를 붙여넣거나 끌어놓으세요",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "붙여넣은 이미지가 없습니다. QR 코드 이미지 자체를 복사하거나 이미지 파일을 선택하세요."
 }

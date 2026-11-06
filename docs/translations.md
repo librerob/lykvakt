@@ -12,6 +12,6 @@ Translations are bundled and loaded locally only when selected. No translation s
 
 The source messages are in src/locales/en.json. Each other JSON file maps an English source message to its translation. Keep placeholders such as {name}, {code} and {seconds} exactly as written; they are inserted as text, never HTML. src/locales/required.json lists the core messages required in every language. New messages can fall back to English while translations are reviewed.
 
-These are initial translations, not a claim of professional or native-speaker review. Corrections are welcome, especially for backup passwords, destructive actions, HOTP counters and the meaning of locking. Run the unit tests and browser checks after editing. Check the 400 px popup, keyboard navigation, long labels and both writing directions.
+The language chooser explicitly labels these as unreviewed translations and warns that some safety instructions remain in English. These are initial translations, not a claim of professional or native-speaker review. Corrections are welcome, especially for backup passwords, destructive actions, HOTP counters and the meaning of locking. Run the unit tests and browser checks after editing. Check the 400 px popup, keyboard navigation, long labels and both writing directions.
 
 The tests check required coverage, placeholder parity, fallback, language preferences and direction metadata. Automated checks cannot establish that every translation is natural or unambiguous.

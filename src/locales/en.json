@@ -227,5 +227,17 @@
   "Account added. Create and verify a new encrypted backup.": "Account added. Create and verify a new encrypted backup.",
   "That account is already in your vault. Nothing was added.": "That account is already in your vault. Nothing was added.",
   "Can't find the setup key?": "Can't find the setup key?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.",
+  "Import QR image": "Import QR image",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Choose image, paste, or drop — PNG, JPEG or WebP",
+  "Paste or drop a QR image": "Paste or drop a QR image",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "No image was pasted. Copy the QR image itself, or choose an image file.",
+  "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.": "QR image header could not be read. Try a cropped PNG, JPEG or WebP image.",
+  "Translations have not been independently reviewed. Some safety instructions are still in English.": "Translations have not been independently reviewed. Some safety instructions are still in English.",
+  "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.": "Short or reused passwords are easier to guess. A backup file can be attacked without opening this app.",
+  "Remove recent recovery copy…": "Remove recent recovery copy…",
+  "Remove the recent recovery copy?": "Remove the recent recovery copy?",
+  "This removes the older encrypted copy kept in this browser. Your current vault and saved backup files stay as they are. The next account change creates a new recovery copy. This cannot erase copies in system backups or browser storage remnants.": "This removes the older encrypted copy kept in this browser. Your current vault and saved backup files stay as they are. The next account change creates a new recovery copy. This cannot erase copies in system backups or browser storage remnants.",
+  "Remove recent copy": "Remove recent copy",
+  "Recent recovery copy removed. Your current vault is unchanged.": "Recent recovery copy removed. Your current vault is unchanged."
 }

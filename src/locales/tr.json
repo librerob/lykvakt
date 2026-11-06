@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Hesap eklendi. Yeni şifreli yedek oluşturup doğrulayın.",
   "That account is already in your vault. Nothing was added.": "Bu hesap zaten kasanızda. Hiçbir şey eklenmedi.",
   "Can't find the setup key?": "Kurulum anahtarını bulamıyor musunuz?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Pano geçmişi anahtarları ve QR resimlerini tutabilir. Kayıtlı kopyaları pano yöneticisinden silin."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Pano geçmişi anahtarları ve QR resimlerini tutabilir. Kayıtlı kopyaları pano yöneticisinden silin.",
+  "Import QR image": "QR görselini içe aktar",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Görsel seçin, yapıştırın veya sürükleyip bırakın — PNG, JPEG veya WebP",
+  "Paste or drop a QR image": "QR görselini yapıştırın veya sürükleyip bırakın",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Görsel yapıştırılmadı. QR görselinin kendisini kopyalayın veya bir görsel dosyası seçin."
 }

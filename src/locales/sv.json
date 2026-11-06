@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Kontot har lagts till. Skapa och verifiera en ny krypterad säkerhetskopia.",
   "That account is already in your vault. Nothing was added.": "Kontot finns redan i valvet. Inget har lagts till.",
   "Can't find the setup key?": "Hittar du inte kontonyckeln?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Urklippshistoriken kan behålla kontonycklar och QR-bilder. Rensa sparade kopior i urklippshanteraren."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "Urklippshistoriken kan behålla kontonycklar och QR-bilder. Rensa sparade kopior i urklippshanteraren.",
+  "Import QR image": "Importera QR-bild",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Välj, klistra in eller dra in en bild — PNG, JPEG eller WebP",
+  "Paste or drop a QR image": "Klistra in eller dra in en QR-bild",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Ingen bild klistrades in. Kopiera själva QR-bilden eller välj en bildfil."
 }

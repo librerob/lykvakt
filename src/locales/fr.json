@@ -175,5 +175,9 @@
   "Account added. Create and verify a new encrypted backup.": "Compte ajouté. Créez et vérifiez une nouvelle sauvegarde chiffrée.",
   "That account is already in your vault. Nothing was added.": "Ce compte est déjà dans votre coffre. Rien n'a été ajouté.",
   "Can't find the setup key?": "Vous ne trouvez pas la clé ?",
-  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "L'historique du presse-papiers peut garder les clés et images QR. Effacez les copies dans son gestionnaire."
+  "Clipboard history may keep setup keys and QR images. Clear saved copies in your clipboard manager.": "L'historique du presse-papiers peut garder les clés et images QR. Effacez les copies dans son gestionnaire.",
+  "Import QR image": "Importer une image QR",
+  "Choose image, paste, or drop — PNG, JPEG or WebP": "Choisissez, collez ou déposez une image — PNG, JPEG ou WebP",
+  "Paste or drop a QR image": "Collez ou déposez une image QR",
+  "No image was pasted. Copy the QR image itself, or choose an image file.": "Aucune image n’a été collée. Copiez l’image QR elle-même ou choisissez un fichier image."
 }

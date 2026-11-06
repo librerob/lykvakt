@@ -75,12 +75,12 @@ export function detectImport(input: string): DetectedImport {
   )
     throw new Error("Import exceeds the 8 MB limit.");
   const trimmed = input.trim();
-  const link = /^[ \t]*(otpauth(?:-migration)?):/m.exec(trimmed);
+  const link = /^[ \t]*(otpauth(?:-migration)?):/im.exec(trimmed);
   if (link)
     return {
       format: "uri",
       name:
-        link[1] === "otpauth-migration"
+        link[1]!.toLowerCase() === "otpauth-migration"
           ? "Google Authenticator transfer"
           : "OTP links",
       encrypted: false,
@@ -336,6 +336,7 @@ export async function readDetectedImport(
   detected: DetectedImport,
   password?: string,
   signal?: AbortSignal,
+  compatibility = false,
 ): Promise<ImportResult & { name: string }> {
   signal?.throwIfAborted();
   let value = detected.value;
@@ -364,6 +365,7 @@ export async function readDetectedImport(
           String(value)
             .split(/\r?\n/)
             .map((line) => {
+              if (compatibility) return line;
               if (!line.trim().startsWith("otpauth:") || line.length > 5000)
                 return line;
               try {
@@ -390,6 +392,7 @@ export async function readDetectedImport(
             })
             .join("\n"),
           "uri",
+          compatibility,
         )
       : detected.format === "aegis" || detected.format === "2fas"
         ? parseImport(JSON.stringify(value), detected.format)

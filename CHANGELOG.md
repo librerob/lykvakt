@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Check declared QR-image dimensions before browser decoding; keep the worker timeout and decoded-size check.
+- Reject stale session activity and drafts, and avoid repeated reloads after a startup storage failure.
+- Review compatible setup links with explicit normalization notes while rejecting duplicate and invalid security settings.
+- Add password-confirmed removal of the recent recovery copy, with conflict and cancellation protection.
+- Clarify password recommendations, unreviewed translations and strict clock-rollback locking.
+
+- Give QR-image imports a prominent action, supported-format hint and dedicated paste/drop screen while preserving text and export-file imports.
+
 ## 0.6.0 — 5 November 2026
 
 - Add Chrome and Firefox install links and a step-by-step backup and restore guide.
